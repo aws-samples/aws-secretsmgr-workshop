@@ -20,7 +20,7 @@
 
 ### Introduction
 
-This module shows how to use AWS Secrets Manager for rotating the password for a publicly-facing Amazon RDS database.  Thi is similar to 
+This module shows how to use AWS Secrets Manager for rotating the password for a publicly-facing Amazon RDS database.
 
 ### Architecture Overview
 
