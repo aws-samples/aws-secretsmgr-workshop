@@ -18,7 +18,7 @@
 
 ## Introduction
 
-This repository contains modules that will help you learn how to use AWS Secrets Manager.  Additional modules will be developed to model different use cases.
+This repository contains modules that will help you learn how to use [AWS Secrets Manager](https://aws.amazon.com/secrets-manager/).  Additional modules will be developed to model different use cases.
 
 ## Prerequisites
 
