@@ -40,4 +40,4 @@ You will incur charges for the services used in these modules.  The pricing for 
 
 ## Modules
 
-1. [Rotating a Secret for a public Amazon RDS database](1_RotatePublicRDS)
+1. [Rotating a Secret for a publicly-facing Amazon RDS database](1_RotatePublicRDS)
