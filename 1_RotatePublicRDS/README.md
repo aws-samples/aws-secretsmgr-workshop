@@ -52,6 +52,10 @@ In order to complete this workshop you'll need the following:
 
 You will incur charges for the services used in these modules.  The pricing for each service is available on that service's pricing page.
 
+### Presentation Materials
+
+We will be adding presentation materials.  Stay tuned!
+
 ### 1. Choose a region
 
 You need to choose a region that offers AWS Secrets Manager and Amazon RDS.  For information about service availability, check the [region table](https://aws.amazon.com/about-aws/global-infrastructure/regional-product-services/).
