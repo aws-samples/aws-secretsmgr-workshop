@@ -38,6 +38,10 @@ You will need an [Amazon EC2 key pair](https://docs.aws.amazon.com/AWSEC2/latest
 
 You will incur charges for the services used in these modules.  The pricing for each service is available on that service's pricing page.
 
+## Presentation Materials
+
+We will be adding presentation materials as well.  Stay tuned!
+
 ## Modules
 
 1. [Rotating a Secret for a publicly-facing Amazon RDS database](1_RotatePublicRDS)
