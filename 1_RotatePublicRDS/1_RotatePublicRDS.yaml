@@ -429,10 +429,6 @@ Resources:
             cmd30installcli:
               command: './awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws'
               cwd: '/tmp'
-            cmd40yumupdate: 
-              command: 'yum -y update'
-            cmd50yumupdate: 
-              command: 'yum -y update'
 
     CreationPolicy:
       ResourceSignal:
