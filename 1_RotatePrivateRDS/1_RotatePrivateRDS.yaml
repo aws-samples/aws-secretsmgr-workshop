@@ -253,6 +253,11 @@ Resources:
         Value: !Ref ProjectTag
       VpcId: !Ref VpcName
 
+# BastionSGSelfReference - We need to make the security group self-
+# referential to handle communication to and from Secrets Manager.
+# Doing this for the bastion host allows us to test Secrets Manager
+# from the AWS CLI.
+
   BastionSGSelfReference:
     Type: "AWS::EC2::SecurityGroupIngress"
     Properties: 
@@ -322,6 +327,7 @@ Resources:
             Action:
             - ec2:Describe*
             Resource: '*'
+
 # BastionProfile - The instance profile for the bastion host which just
 # contains the corresponding IAM role.
 
@@ -841,6 +847,9 @@ Resources:
       - Key: Project
         Value: !Ref ProjectTag
       VpcId: !Ref VpcName
+
+# DBSGSelfReference - We need to make the security group self-
+# referential to handle communication to and from Secrets Manager.
 
   DBSGSelfReference:
     Type: "AWS::EC2::SecurityGroupIngress"
