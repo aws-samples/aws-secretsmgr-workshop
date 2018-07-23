@@ -316,4 +316,4 @@ Now that you have seen how AWS Secrets Manager can rotate the credentials for a 
 
 ### 8. Conclusion
 
-You have completed this module. Visit the [main Secrets Managager workshop site](https://github.com/jeffscottlevine/aws-secretsmgr-workshop/) for more workshops as they become available.
+You have completed this module. Visit the [main Secrets Managager workshop site](https://github.com/aws-samples/aws-secretsmgr-workshop) for more workshops as they become available.
