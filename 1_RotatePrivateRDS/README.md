@@ -126,7 +126,7 @@ In this section, you will store the RDS database credentials in AWS Secrets Mana
 
 - __3.5.__ Click **Next**.
 
-- __3.6.__ Enter a name for the secret.  You can pick a name or just use **smdemo** as shown below.
+- __3.6.__ Enter a name for the secret.  You can pick a name or just use **smdemo** as shown below.  Note that this must bot be the name of a secret that is pending deletion.
 
 ![AWS Secrets Manager store secret part 2](img/1_RotatePrivateRDSSMStore2.png)
 
