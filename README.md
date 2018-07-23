@@ -44,4 +44,4 @@ We will be adding presentation materials as well.  Stay tuned!
 
 ## Modules
 
-1. [Rotating a Secret for a publicly-facing Amazon RDS database](1_RotatePublicRDS)
+1. [Rotating a Secret for a private Amazon RDS database](1_RotatePrivateRDS)
