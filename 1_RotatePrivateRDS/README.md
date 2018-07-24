@@ -309,7 +309,7 @@ Now that you have seen how AWS Secrets Manager can rotate the credentials for a 
 
   Look for a stack with this naming convention that was created at about the same time as you enabled rotation.  **Do not proceed to the next step until this stack has been deleted.**
 
-- __7.3.__ [Delete the main CloudFormation stack](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cfn-console-delete-stack.html) that you created in steps 2.1 through 2.9.  The stack deletion process may take several minutes to complete. 
+- __7.3.__ [Delete the main CloudFormation stack](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cfn-console-delete-stack.html) that you created in steps 2.1 through 2.9.  The stack deletion process may take several minutes to complete.  If the stack deletion process either pauses or fails, it may be because of an Elastic Network Interface that gets created when rotation is enabled.  If you delete this interface and restart the stack deletion.
 
 </details>
 
