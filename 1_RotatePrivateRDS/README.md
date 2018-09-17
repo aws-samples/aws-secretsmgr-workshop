@@ -35,7 +35,7 @@ This environment consists of a VPC in the us-east-1 region with two subnets.  Th
 | **Security Note** | 
 | ---------- | 
 | |
-|**_For the sake of simplicity, the CloudFormation template used in the module creates shell scripts that use *jq* to parse the secret value into shell variables to allow for easy command line manipulation. This is NOT a security best practice for a production environment. In a production environment, we recommend that you don't store passwords in environment variables, and work with them in plaintext at the command line._**
+|**_For the sake of simplicity, this tutorial uses jq to parse the secret value into environment variables to allow for easy command line manipulation. This is NOT a security best practice for a production environment. In a production environment, we recommend that you don't store passwords in environment variables._**
 
 
 ### Prerequisites
@@ -103,7 +103,7 @@ Enter the values below into Stack name and parameter fields:
 
 ![CloudFormation Outputs](img/1_RotatePrivateRDSCFOut.png)
 
-The outputs values include the RDS master username and password, both of which are set to randon alphanumeric strings for added security. You will store the DBUser and DBPassword values as a secret in Secrets Manager.  You will se the DBEndpoint value to help you select the correct database in Secrets Manager.  Another output value is the IP address of the bastion host.  You will need this IP address to set up a connection to the bastion host later in this module.  Keep this window open.
+The outputs values include the RDS master username and password, both of which are set to random alphanumeric strings for added security. You will store the DBUser and DBPassword values as a secret in Secrets Manager.  You will se the DBEndpoint value to help you select the correct database in Secrets Manager.  Another output value is the IP address of the bastion host.  You will need this IP address to set up a connection to the bastion host later in this module.  Keep this window open.
 </details>
 
 ### 3. Store the secret value in AWS Secrets Manager
