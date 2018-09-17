@@ -67,7 +67,7 @@ In this section, you will use AWS CloudFormation to build the environment shown 
 
 ___Complete all the steps below unless they are marked "optional."___
 
-- __2.1.__ Download the [AWS Cloudformation template](https://github.com/jeffscottlevine/aws-secretsmgr-workshop/blob/master/1_RotatePrivateRDS/1_RotatePrivateRDS.yaml) and save it to your workstation.
+- __2.1.__ Download the [AWS Cloudformation template](https://github.com/aws-samples/aws-secretsmgr-workshop/blob/master/1_RotatePrivateRDS/1_RotatePrivateRDS.yaml) and save it to your workstation.
 
 - __2.2.__ In the AWS Management Console, Under Management Tools, Select **CloudFormation**.
 
