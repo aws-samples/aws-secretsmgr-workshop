@@ -430,6 +430,40 @@ Resources:
               mode: '755'
               owner: ec2-user
               group: ec2-user
+            /home/ec2-user/displaysecretversions.sh:
+              content: !Sub |
+                #/bin/bash
+                
+                # display the versions of a secret
+                
+                if [ $# -ne 1 ]
+                then
+                  echo usage: $0 SecretName
+                  exit 1
+                fi
+                
+                VERSIONIDS=($(aws secretsmanager list-secret-version-ids --secret-id $1 --region ${AWS::Region} --query '[Versions[*].[VersionId]]' --output text))
+                
+                for V in ${!VERSIONIDS[@]}
+                do
+                  SECRETINFO=`aws secretsmanager get-secret-value --secret-id $1 --region ${AWS::Region} --version-id $V`
+                  SECRETSTRING=`echo $SECRETINFO|jq -r .SecretString`
+                  USERNAME=`echo $SECRETSTRING|jq -r .username`
+                  PASSWORD=`echo $SECRETSTRING|jq -r .password`
+                  VERSIONSTAGES=`echo $SECRETINFO|jq -r .VersionStages | tr -d ' \n\[\]\"'`
+              
+                  echo Version: $V
+                  echo
+                  echo username = $USERNAME
+                  echo password = $PASSWORD
+                  echo versionstages = $VERSIONSTAGES
+                  echo
+                  echo ----
+                  echo
+                done
+              mode: '755'
+              owner: ec2-user
+              group: ec2-user
             /tmp/awscli-bundle.zip:
               source: https://s3.amazonaws.com/aws-cli/awscli-bundle.zip
               mode: '755'
