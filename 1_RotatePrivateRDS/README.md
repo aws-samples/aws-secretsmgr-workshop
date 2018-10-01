@@ -270,7 +270,7 @@ In this section, you will enable the rotation of the secret you created in AWS S
 
 ![AWS Secrets Manager rotation part 2](img/1_RotatePrivateRDSRotate2.png)
 
-A message will appear when the rotation is complete.
+A message will appear when the rotation is complete.  **Refresh your browser window to update your any cached fields.**
 
 ![AWS Secrets Manager rotation part 3](img/1_RotatePrivateRDSRotate3.png)
 
