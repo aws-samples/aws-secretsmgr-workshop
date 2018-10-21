@@ -34,9 +34,10 @@ Description: Demo environment for AWS Secrets Manager with private RDS rotation.
 # - An EC2 instance running the Amazon Linux 2 operating system (Bastion)
 #   which is installed on DemoSubnet01
 # - A security group for the EC2 instance (BastionSG)
-# - Two bash scripts on the bastion instance
+# - Three bash scripts on the bastion instance
 #     mysql.oldway.sh - connect to the database with hard-coded passwords
 #     mysql.newway.sh - connect to the database with secrets manager
+#     displaysecretversions.sh - displays the versions of a secret
 # - A private RDS database
 #
 #
