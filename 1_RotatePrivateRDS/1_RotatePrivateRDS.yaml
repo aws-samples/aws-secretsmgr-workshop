@@ -875,7 +875,7 @@ Resources:
       - IpProtocol: tcp
         FromPort: !Ref DBPort
         ToPort: !Ref DBPort
-        CidrIp: 10.200.0.0/0
+        CidrIp: 10.200.0.0/16
       Tags:
       - Key: Name
         Value: !Join [ '', [ Ref: NamePrefix, '-dbsg' ]]
