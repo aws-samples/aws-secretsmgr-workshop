@@ -43,8 +43,6 @@ This environment consists of a VPC in the us-east-1 region with two subnets.  Th
 In order to complete this workshop you'll need the following:
 <br />
 * an AWS Account with administrator access to services used in the module including AWS Secrets Manager, AWS CloudFormation, Amazon EC2, Amazon RDS, and Amazon VPC
-* an [Amazon EC2 key pair](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html) in the region you have chosen to create a bastion instance from which you will execute various commands
-* a program (e.g. [putty](https://www.putty.org/) to connect to the Amazon EC2 bastion host using the secure shell (ssh) protocol
 
 ### Charges
 
@@ -85,11 +83,11 @@ Enter the values below into Stack name and parameter fields:
 | Field name | Value |
 | ---------- | ----- |
 | Stack name | You can choose or just use **smdemo** |
-| Choose a key pair | Select the Amazon EC2 key pair |
 | Enter the name of the database | Accept the default value of **smdemo** |
 | Enter the TCP port for the database endpoint | Accept the default value of **3306** |
 | Enter a prefix for the Name tag | Accept the default value of **smdemo** |
 | Enter the value for the Project tag | Accept the default value of **smproj** |
+| Enter the SSM AMI Id Parameter | Accept the default value - Do not change! |
 
 <br />
 
@@ -154,11 +152,11 @@ In this section, you will connect to the bastion host so you can run scripts tha
 
 ___Complete all the steps below unless they are marked "optional."___
 
-- __4.1.__ Locate the Amazon EC2 key pair thst you provided to AWS CloudFormation.
+- __4.1.__ Connect to the bastion host using AWS Systems Manager Session Manager.
 
-- __4.2.__ Locate the IP address of the bastion host that appears as an output to AWS CloudFormation
+- __4.2.__ After you login, use the **sudo su ec2-user** command since the ec2-user id is the owner of all the scripts.
 
-- __4.3.__ [Connect to the bastion host](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AccessingInstances.html) using the EC2 key pair and the IP address.  Your user ID will be **ec2-user@X.X.X.X** where X.X.X.X is the bastion IP address.  Remain logged in for the remainder of this module.
+- __4.3.__ Change to the home directory of the ec2-user id by entering the **cd** command without any arguments.
 
 - __4.4.__ Use the **ls** command to list the contents of the home directory.  You will see two shell scripts.
 
