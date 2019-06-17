@@ -1,5 +1,4 @@
-
-# Copyright 2018 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy of this
 # software and associated documentation files (the "Software"), to deal in the Software
@@ -50,9 +49,6 @@ Description: Demo environment for AWS Secrets Manager with private RDS rotation.
 # RandomStrFunction - Generates a random string of characters that will be
 # used to create the database master user and password.
 #
-# AMIInfoFunction - Look up the Amazon Linux 2 AMI for the bastion host.
-#
-#
 # SECURITY NOTE:
 #
 # The purpose of this template is to give a simple demonstration of AWS
@@ -65,14 +61,12 @@ Metadata:
         Label:
           default: 'Demonstration of AWS Secrets Manager on a private Amazon RDS database'
         Parameters:
-          - BastionKeyPair
           - DBName
           - DBPort
           - NamePrefix
           - ProjectTag
+          - AmazonLinux2AmiId
     ParameterLabels: 
-      BastionKeyPair:
-        default: 'Choose a key pair:'
       DBName:
         default: 'Enter the name of the database:'
       DBPort:
@@ -81,6 +75,8 @@ Metadata:
         default: 'Enter a prefix for the Name tag:'
       ProjectTag:
         default: 'Enter the value for the Project tag:'
+      AmazonLinux2AmiId:
+        default: 'Enter the name of the SSM AMI Id parameter (DO NOT CHANGE):'
 
 Parameters:
 
@@ -105,11 +101,6 @@ Parameters:
     MaxLength: 15
     AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*'
 
-# BastionKeyPair - The EC2 keypair for the bastion host.
-
-  BastionKeyPair:
-    Type: AWS::EC2::KeyPair::KeyName
-
 # DBName - The RDS database instance name for the MySQL database.
 # You would typically accept the default.
 
@@ -130,6 +121,12 @@ Parameters:
     MinValue: 1024
     MaxValue: 65535
     ConstraintDescription: 'Must be between 1024 and 65535'
+
+# AmazonLinux2AmiId: The AMI for Amazon Linux 2
+
+  AmazonLinux2AmiId:
+    Type: 'AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>'
+    Default: '/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2'
 
 Resources:
 
@@ -487,10 +484,9 @@ Resources:
     Properties:
       AvailabilityZone: !Select [0, !Split [",", !GetAtt VpcEndpointServiceAzs.Azs]]
       IamInstanceProfile: !Ref BastionProfile
-      ImageId: !GetAtt AMIInfo.Id
+      ImageId: !Ref AmazonLinux2AmiId
       InstanceInitiatedShutdownBehavior: stop
       InstanceType: t2.micro
-      KeyName: !Ref BastionKeyPair
       Monitoring: true
       NetworkInterfaces:
       - AssociatePublicIpAddress: true
@@ -549,87 +545,8 @@ Resources:
             Resource: arn:aws:logs:*:*:*
           - Effect: Allow
             Action:
-            - ec2:DescribeImages
-            Resource: '*'
-          - Effect: Allow
-            Action:
             - ec2:DescribeVpcEndpointServices
             Resource: '*'
-
-# AMIInfoFunction - Look up an AMI based on a NameFilter
-# This AWS Lambda function is used to look up an Amazon EC2 AMI based
-# on a name filter. An example of a name filter would be:
-#
-# amzn2-ami-hvm\*ebs
-#
-# After looking up the names of all images that satify the filter,
-# they are sorted in reverse by date/time stamp and the first AMI
-# ID (which corresponds to the newest AMI) is returned.
-#
-# Using a Lambda function makes it possible to look up the AMI
-# dynamically.  THe alternative would be to create a static map.
-#
-# Some enhancements could be made here, for example filtering out
-# beta releases.
-
-  AMIInfoFunction:
-    Type: AWS::Lambda::Function
-    Properties: 
-      Description: 'Look up an AMI based on a filter'
-      Handler: index.handler
-      MemorySize: 128
-      Role: !GetAtt LambdaExecutionRole.Arn
-      Runtime: 'python3.6'
-      Timeout: 30
-      Tags: 
-      - Key: Name
-        Value: !Join [ '', [ Ref: NamePrefix, '-amilambda' ]]
-      - Key: Project
-        Value: !Ref ProjectTag
-      Code:
-        ZipFile: |
-          import json
-          import boto3
-          import cfnresponse
-          def handler(event, context):
-            if event['RequestType'] == 'Delete':
-              responseData = {}      
-              cfnresponse.send(event, context, cfnresponse.SUCCESS, responseData)
-              return
-            
-            ec2=boto3.client('ec2')
-            imageDescriptions=ec2.describe_images(
-              Owners=['amazon'],
-              Filters=[
-                {'Name': 'name', 'Values': [event['ResourceProperties']['NameFilter']]}
-              ],
-            )
-            
-            if len(imageDescriptions) == 0:
-              responseData = {}
-              cfnresponse.send(event, context, cfnresponse.FAILED)
-            else:
-              amiNames = sorted(imageDescriptions['Images'],
-                key=lambda x: x['CreationDate'],
-                reverse=True)
-              responseData = {}
-              responseData['Id'] = amiNames[0]['ImageId']
-              cfnresponse.send(event, context, cfnresponse.SUCCESS, responseData)
-            
-            return
-
-# AMIInfo - The AWS Lambda-backed resource for looking up an Amazon EC2 AMI
-#
-# Parameters
-#
-# ServiceToken - a pointer to the AWS Lambda function
-# NameFilter - the name filter to pass to the describe_images API
-
-  AMIInfo:
-    Type: Custom::AMIInfo
-    Properties:
-      ServiceToken: !GetAtt AMIInfoFunction.Arn
-      NameFilter: 'amzn2-ami-hvm*gp2'
 
 # RandomStrFunction - Generate a string of random characters
 #
