@@ -284,6 +284,8 @@ Resources:
           Action:
           - sts:AssumeRole
       Path: '/'
+      ManagedPolicyArns:
+      - arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM
       Policies:
       - PolicyName: !Join [ '', [ Ref: NamePrefix, '-CloudWatch' ]]
         PolicyDocument:
