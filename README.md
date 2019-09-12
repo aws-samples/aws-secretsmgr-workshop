@@ -30,17 +30,9 @@ In order to complete this workshop you'll need an AWS Account with admin access 
 
 Choose an AWS Region that support the complete set of services covered in the material including Amazon RDS, Amazon VPC, and AWS Secrets Manager. Use the [Region Table](https://aws.amazon.com/about-aws/global-infrastructure/regional-product-services/) to determine which services are available in a Region.
 
-### EC2 Key Pair
-
-You will need an [Amazon EC2 key pair](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html) in the region you have chosen to create a bastion instance from which you will execute various commands. 
-
 ### Charges
 
 You will incur charges for the services used in these modules.  The pricing for each service is available on that service's pricing page.
-
-## Presentation Materials
-
-We will be adding presentation materials as well.  Stay tuned!
 
 ## Modules
 
