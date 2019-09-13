@@ -44,9 +44,9 @@ markdown_extensions:
 
 # Navigation
 nav:
-  - Overview: index.md
-  - Getting Started: getting-started.md
-  - Amazon RDS: 1_RotatePrivateRDS/README.md
-  - Amazon ECS: 2_RotatePrivateRDSECSArch/README.md
-  - Contributing: contribute.md
-  - License: license.md
+  - 'Overview': 'index.md'
+  - 'Getting Started': 'getting-started.md'
+  - 'Amazon RDS': '1_RotatePrivateRDS/README.md'
+  - 'Amazon ECS': '2_RotatePrivateRDSECSArch/README.md'
+  - 'Contributing': 'contribute.md'
+  - 'License': 'license.md'
