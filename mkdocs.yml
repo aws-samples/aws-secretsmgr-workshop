@@ -1,0 +1,52 @@
+# Project information
+
+site_name: Secrets Manager Workshop
+site_short_name: Secrets Manager Workshop
+site_description: 'A hands-on workshop to learn about using Secrets Manager.'
+site_author: 'aws-security-workshops@amazon.com'
+site_url: 'https://secrets-manager.awssecworkshops.com/'
+
+# Repository
+repo_name: 'aws-samples/aws-secretsmgr-workshop'
+repo_url: 'https://github.com/aws-samples/aws-secretsmgr-workshop'
+
+# Copyright
+copyright: '&copy; 2019, Amazon Web Services, Inc. or its affiliates. All rights reserved.'
+
+# Configuration
+theme:
+  name: 'material'
+  logo: 'assets/images/aws_smile_logo.png'
+  favicon: 'assets/images/aws-favicon.ico'
+  feature:
+    tabs: true
+  custom_dir: 'docs/theme'
+
+# Customization
+extra_css:
+  - 'stylesheets/custom.css'
+extra:
+  social:
+    - type: 'home'
+      link: 'https://awssecworkshops.com'
+    - type: 'shield'
+      link: 'https://aws.amazon.com/security/'
+    - type: 'twitter'
+      link: 'https://twitter.com/awssecurityinfo?lang=en'
+    - type: 'rss'
+      link: 'https://aws.amazon.com/blogs/security/'
+
+# Extensions
+markdown_extensions:
+  - admonition
+  - codehilite
+  - pymdownx.details
+
+# Navigation
+nav:
+  - Overview: index.md
+  - Getting Started: getting-started.md
+  - Amazon RDS: 1_RotatePrivateRDS/README.md
+  - Amazon ECS: 2_RotatePrivateRDSECSArch/README.md
+  - Contributing: contribute.md
+  - License: license.md
