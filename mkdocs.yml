@@ -44,9 +44,13 @@ markdown_extensions:
 
 # Navigation
 nav:
-  - 'Overview': 'index.md'
-  - 'Getting Started': 'getting-started.md'
-  - 'Amazon RDS': '1_RotatePrivateRDS/README.md'
-  - 'Amazon ECS': '2_RotatePrivateRDSECSArch/README.md'
+  - Overview: 'index.md'
+  - 'RDS and Fargate':
+    - 'Scenario': 'RDSFargateRound/index.md'
+    - 'Getting started': 'RDSFargateRound/getting-started.md'
+    - 'Build phase': 'RDSFargateRound/build.md'
+    - 'RDS phase': 'RDSFargateRound/RDS.md'
+    - 'Fargate phase': 'RDSFargateRound/Fargate.md'
+    - 'Clean up phase': 'RDSFargateRound/cleanup.md'
   - 'Contributing': 'contribute.md'
-  - 'License': 'license.md'
+  - 'License': 'https://github.com/aws-samples/aws-secretsmgr-workshop/blob/master/LICENSE'
