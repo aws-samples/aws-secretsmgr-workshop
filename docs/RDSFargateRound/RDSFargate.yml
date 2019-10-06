@@ -1,0 +1,1415 @@
+# Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy of this
+# software and associated documentation files (the "Software"), to deal in the Software
+# without restriction, including without limitation the rights to use, copy, modify,
+# merge, publish, distribute, sublicense, and/or sell copies of the Software, and to
+# permit persons to whom the Software is furnished to do so.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+# INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+# PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+# HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+# OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+# SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+---
+AWSTemplateFormatVersion: '2010-09-09'
+
+Description: Demo environment for AWS Secrets Manager with Amazon RDS and AWS Fargate
+
+
+# RDSECS.yaml
+#
+# This CloudFormation template creates infrastructure for demonstrating
+# the following:
+#
+# (1) Using AWS Secrets Manager on Amazon EC2 to access a private RDS database
+# (2) Using AWS Secrets Nanager on Amazon Fargate to access a private RDS database
+#
+# It creates the following assets on the Amazon EC2 instance
+#
+# mysql.oldway.sh - connect to the database with hard-coded passwords
+# mysql.newway.sh - connect to the database with secrets manager
+# displaysecretversions.sh - displays the versions of a secret
+# createsecret.sh - stores a secret for the database
+#
+# Dockerfile - created on the bastion instance if you want to run the
+# dockerbuild.sh - builds a Docker image from the Dockerfile
+# dockertagandpush.sh - loads the Docker image into Amazon ECR
+# cleanup.sh - run before deleting the stack (work in progress)
+#
+# SECURITY NOTE:
+#
+# The purpose of this template is to give a simple demonstration of AWS
+# Secrets Manager. There are things in here that are not best practice.
+# For example:
+#
+# The shell scripts use environment variables to assist with the processing
+# of Secrets Manager strings.  This is not a good idea because the strings may
+# be visibile if someone is doing a "ps" or looking at memory but this approach
+# makes doing demonstrations easier.
+#
+# Note on the Docker portion of this template.
+#
+# The purpose of the Docker-related part of this demo is to show how
+# AWS Secrets Manager can be used in conjunction with Amazon ECS Fargate.
+# This is done by using the "secrets" field of the task definition.
+#
+# Here is how it works:
+#
+# (1) Modify the task definition to include the secret value and have it
+#     stored in the TASKDEF_SECRET environment value.
+# (2) When the container is launched a script is created in
+#     /etc/profile.d/ecs.sh that has export statements for all secrets
+#     and environment variables whose names begin with "TASKDEF_".
+# (3) When a user ssh's in to "ec2-user" at the container's public IP,
+#     the bash_profile script will eventually source the ecs.sh file which
+#     will create the TASKDEF environment variables.
+#
+# More detailed instructions will come later.
+
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      -
+        Label:
+          default: 'Demonstration of AWS Secrets Manager on a private Amazon RDS database'
+        Parameters:
+          - DBName
+          - DBPort
+          - BastionCidr
+          - NamePrefix
+          - ProjectTag
+          - AmazonLinux2AmiId
+    ParameterLabels: 
+      DBName:
+        default: 'Enter the name of the database:'
+      DBPort:
+        default: 'Enter the TCP port for the database endpoint:'
+      BastionCidr:
+        default: 'Enter the CIDR that can access the bastion host:'
+      NamePrefix:
+        default: 'Enter a prefix for the Name tag:'
+      ProjectTag:
+        default: 'Enter the value for the Project tag:'
+      AmazonLinux2AmiId:
+        default: 'Enter the name of the SSM AMI Id parameter (DO NOT CHANGE):'
+
+Parameters:
+
+# NamePrefix - A prefix to apply to the Name tag of taggable resources.
+# The Name tag will be set to the NamePrefix, a dash ("-"), and a suffix
+# that varies based on the resource.  You would typically accept the default.
+
+  NamePrefix:
+    Type: String
+    Default: 'smdemo'
+    MinLength: 2
+    MaxLength: 15
+    AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*'
+
+# ProjectTag - A value to apply to the Project tag of taggable resources. You
+# would typically accept the default.
+
+  ProjectTag:
+    Type: String
+    Default: 'smproj'
+    MinLength: 2
+    MaxLength: 15
+    AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*'
+
+# DBName - The RDS database instance name for the MySQL database.
+# You would typically accept the default.
+
+  DBName:
+    Default: 'smdemo'
+    Type: String
+    MinLength: 1
+    MaxLength: 64
+    AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*'
+    ConstraintDescription: 'Up to 64 alphanumerics beginning with a letter'
+
+# DBPort - The TCP port for the MySQL RDS database.  You should typically
+# accept the default.
+
+  DBPort:
+    Default: 3306
+    Type: Number
+    MinValue: 1024
+    MaxValue: 65535
+    ConstraintDescription: 'Must be between 1024 and 65535'
+
+# BastionCidr - The CIDR block that can access the bastion host
+
+  BastionCidr:
+    AllowedPattern: '((\d{1,3})\.){3}\d{1,3}/\d{1,2}'
+    Default: 0.0.0.0/0
+    ConstraintDescription: 'Must be a CIDR block (#.#.#.#/#)'
+    Type: String
+
+# AmazonLinux2AmiId: The AMI for Amazon Linux 2
+
+  AmazonLinux2AmiId:
+    Type: 'AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>'
+    Default: '/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2'
+
+Resources:
+
+# LogGroup - Cloudwatch Logs Group
+
+  LogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties: 
+      RetentionInDays: 3
+
+# VpcName - Our VPC
+
+  VpcName:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.200.0.0/16
+      EnableDnsSupport: 'true'
+      EnableDnsHostnames: 'true'
+      Tags:
+      - Key: Name
+        Value: !Join [ '', [ Ref: NamePrefix, '-vpc' ]]
+      - Key: Project
+        Value: !Ref ProjectTag
+
+# DemoSubnet01 and DemoSubnet02 - Note that the EC2 and
+# RDS instances only go into DemoSubnet01.  We need, however, another
+# subnet for the DB subnet group regardless.
+
+  DemoSubnet01:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: !Select [0, !Split [",", !GetAtt VpcEndpointServiceAzs.Azs]]
+      CidrBlock: 10.200.11.0/24
+      MapPublicIpOnLaunch: 'true'
+      Tags:
+      - Key: Name
+        Value: !Join [ '', [ Ref: NamePrefix, '-demosn01' ]]
+      - Key: Project
+        Value: !Ref ProjectTag
+      VpcId: !Ref VpcName
+
+  DemoSubnet02:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: !Select [1, !Split [",", !GetAtt VpcEndpointServiceAzs.Azs]]
+      CidrBlock: 10.200.12.0/24
+      MapPublicIpOnLaunch: 'true'
+      Tags:
+      - Key: Name
+        Value: !Join [ '', [ Ref: NamePrefix, '-demosn02' ]]
+      - Key: Project
+        Value: !Ref ProjectTag
+      VpcId: !Ref VpcName
+
+# VpcIgw and VpcIgwAttachment - Set up the Internet gateway
+# and the attachment.
+
+  VpcIgw:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+      - Key: Name
+        Value: !Join [ '', [ Ref: NamePrefix, '-igw' ]]
+      - Key: Project
+        Value: !Ref ProjectTag
+
+  VpcIgwAttachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      InternetGatewayId: !Ref VpcIgw
+      VpcId: !Ref VpcName
+
+# DemoRouteTable - The route table.
+
+  DemoRouteTable:
+    Type: AWS::EC2::RouteTable
+    DependsOn: VpcIgwAttachment
+    Properties:
+      VpcId: !Ref VpcName
+      Tags:
+      - Key: Name
+        Value: !Join [ '', [ Ref: NamePrefix, '-rtb' ]]
+      - Key: Project
+        Value: !Ref ProjectTag
+
+# DefaultPubRoute - The default route to the public internet.
+
+  DefaultPubRoute:
+    Type: AWS::EC2::Route
+    DependsOn: VpcIgwAttachment
+    Properties:
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref VpcIgw
+      RouteTableId: !Ref DemoRouteTable
+
+# DemoSubnet01DemoRtb and DemoSubnet02DemoRtb - Associate subnets
+# with the routng table.
+
+  DemoSubnet01DemoRtb:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    DependsOn: VpcIgwAttachment
+    Properties:
+      RouteTableId: !Ref DemoRouteTable
+      SubnetId: !Ref DemoSubnet01
+
+  DemoSubnet02DemoRtb:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    DependsOn: VpcIgwAttachment
+    Properties:
+      RouteTableId: !Ref DemoRouteTable
+      SubnetId: !Ref DemoSubnet02
+
+# BastionSG - The security group for ssh on the bastion host.,  This
+# is open to the Internet.
+
+  BastionSG:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Enable SSH access
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: '22'
+        ToPort: '22'
+        CidrIp: !Ref BastionCidr
+      Tags:
+      - Key: Name
+        Value: !Join [ '', [ Ref: NamePrefix, '-bastionsg' ]]
+      - Key: Project
+        Value: !Ref ProjectTag
+      VpcId: !Ref VpcName
+
+# BastionSGSelfReference - We need to make the security group self-
+# referential to handle communication to and from Secrets Manager.
+# Doing this for the bastion host allows us to test Secrets Manager
+# from the AWS CLI.
+
+  BastionSGSelfReference:
+    Type: "AWS::EC2::SecurityGroupIngress"
+    Properties: 
+      FromPort: 0
+      GroupId: !GetAtt BastionSG.GroupId
+      IpProtocol: tcp
+      SourceSecurityGroupId: !GetAtt BastionSG.GroupId 
+      ToPort: 65535
+
+# BastionRole - The instance role for the bastion host.  We only need
+# permissions for Secrets Manager and KMS for this demo.
+
+  BastionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - ec2.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Path: '/'
+      ManagedPolicyArns:
+      - arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM
+      Policies:
+      - PolicyName: !Join [ '', [ Ref: NamePrefix, '-CloudWatchLogs' ]]
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - logs:CreateLogGroup
+            - logs:CreateLogStream
+            - logs:PutLogEvents
+            - logs:DescribeLogStreams
+            Resource: arn:aws:logs:*:*:*
+      - PolicyName: !Join [ '', [ Ref: NamePrefix, '-servicelinkedroles' ]]
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - iam:CreateServiceLinkedRole
+            - iam:DeleteServiceLinkedRole
+            - iam:PutRolePolicy
+            - iam:GetServiceLinkedRoleDeletionStatus
+            - iam:UpdateRoleDescription
+            Resource: 'arn:aws:iam::*:role/aws-service-role/ecs.amazonaws.com/AWSServiceRoleForECS'
+            Condition:
+              StringLike:
+                iam:AWSServiceName: ecs.amazonaws.com
+      - PolicyName: !Join [ '', [ Ref: NamePrefix, '-others' ]]
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - cloudwatch:PutMetricData
+            - ec2:Describe*
+            - ecr:*
+            - ecs:*
+            - kms:*
+            - secretsmanager:*
+            Resource: '*'
+
+# BastionProfile - The instance profile for the bastion host which just
+# contains the corresponding IAM role.
+
+  BastionProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Path: '/'
+      Roles:
+      - !Ref BastionRole
+
+# Bastion - Our bastion host.  Note that we launch this with the BastionProfile
+# instance profile so we get access to some AWS services.  We also create the
+# take advantage of CloudFormation::Init to do some initialization create files,
+# install packages, and run commands.
+#
+# Packages installed:
+#
+# jq - for parsing the strings from Secrets Manager
+# python3 - for building the newest AWS CLI which has the most updated commands
+#
+# Additionally:
+#
+# (1) Install the LAMP (Linux-Apache-MariaDB-PHP) stack using
+# amazon-linux-extras.   We just need the mysql client and this is an easy
+# way of getting it.
+#
+# (2) Install the Docker package with amazon-linux-extras
+#
+# (2) Build the latest AWS CLI which has the latest commands
+#
+# (3) Apply updates - twice for good measure!
+#
+# Files installed:
+#
+# See top of CloudFormation template for more info on the files that are
+# installed.
+
+  Bastion:
+    Type: AWS::EC2::Instance
+    DependsOn:
+      - VpcIgwAttachment
+      - DBInstance
+
+    Metadata:
+      AWS::CloudFormation::Init:
+        configSets:
+          default:
+          - BastionSetup
+
+        BastionSetup:
+          files:
+            /home/ssm-user/.aws/config:
+              content: !Sub |
+                [default]
+                region = ${AWS::Region}
+              mode: '644'
+              owner: ec2-user
+              group: ec2-user
+            /home/ec2-user/.aws/config:
+              content: !Sub |
+                [default]
+                region = ${AWS::Region}
+              mode: '644'
+              owner: ec2-user
+              group: ec2-user
+            /home/ec2-user/mysql.oldway.sh:
+              content: !Sub |
+                #!/bin/bash
+                
+                # mysql.oldway.sh
+                
+                # This is the old way of accessing a database, with hard-coded passwords.
+                # This script will only work right after the CloudFormation script runs.
+                # After you store and rotate the secret, you will need to use the
+                # mysql.newway.sh script.
+                
+                mysql \
+                -p${DBMasterPassword.RandomString} \
+                -u ${DBMasterUser.RandomString} \
+                -P ${DBPort} \
+                -h ${DBInstance.Endpoint.Address} 
+              mode: '755'
+              owner: ec2-user
+              group: ec2-user
+            /home/ec2-user/mysql.newway.sh:
+              content: !Sub |
+                #!/bin/bash
+                
+                # This is the new way of accessing a database, with AWS Secrets
+                # Manager.  There are two ways to get the secret value string.
+                #
+                # (1) If TASKDEF_SECRET is defined, use this is the secret
+                #     string. This environment variable is set in the Amazon
+                #     ECS task definition.
+                # (2) Otherwise, if TASKDEF_SECRET is not defined, expect a
+                #     secret name as the command argument and then grab the
+                #     secret value string from Secrets Manaer.
+                #
+                # Note that the secret value whether obtained directly from
+                # Secrets Manager or through the task definition contains a
+                # JSON structure that contains several fields such as the
+                # username, the password, the database, and so forth.
+               
+                # getsecretvalue() - return the value for a secret
+                # $1 - the secret id
+                
+                getsecretvalue() {
+                  aws secretsmanager get-secret-value --secret-id $1 | \
+                    jq .SecretString | \
+                    jq fromjson
+                }
+                
+                if [ -n "$TASKDEF_SECRET" ]
+                then
+                  echo "received secret value from ECS task definition..."
+                  secret="$TASKDEF_SECRET"
+                else
+                  if [ $# -ne 1 ]
+                  then
+                    echo usage: $0 SecretName
+                    exit 1
+                  fi
+                  secret=`getsecretvalue $1`
+                fi
+ 
+                user=$(echo $secret | jq -r .username)
+                password=$(echo $secret | jq -r .password)
+                endpoint=$(echo $secret | jq -r .host)
+                port=$(echo $secret | jq -r .port)
+                
+                mysql \
+                -p$password \
+                -u $user \
+                -P $port \
+                -h $endpoint
+              mode: '755'
+              owner: ec2-user
+              group: ec2-user
+            /home/ec2-user/displaysecretversions.sh:
+              content: !Sub |
+                #/bin/bash
+                
+                # displaysecretversions.sh - display the versions of a secret'
+                # $1 - the secret id'
+                
+                # getsecretinfo() - return the info for a secret
+                # $1 - the secret id
+                # $2 - the secret version
+                
+                getsecretinfo() {
+                  aws secretsmanager get-secret-value --secret-id $1 --version-id $2
+                }
+                
+                if [ $# -ne 1 ]
+                then
+                  echo usage: $0 SecretName
+                  exit 1
+                fi
+                
+                set -f
+                VERSIONIDS=($(aws secretsmanager list-secret-version-ids \
+                  --secret-id $1 \
+                  --query "[Versions[*].[VersionId]]" \
+                  --output text \
+                ))
+                set +f
+                
+                for V in ${!VERSIONIDS[@]}
+                do
+                  SECRETINFO=`getsecretinfo $1 $V`
+                  SECRETSTRING=`echo $SECRETINFO|jq -r .SecretString`
+                  USERNAME=`echo $SECRETSTRING|jq -r .username`
+                  PASSWORD=`echo $SECRETSTRING|jq -r .password`
+                  STAGES=`echo $SECRETINFO|jq -r .VersionStages | tr -d " \n\[\]\042"`
+              
+                  echo Version: $V
+                  echo
+                  echo username = $USERNAME
+                  echo password = $PASSWORD
+                  echo versionstages = $STAGES
+                  echo
+                  echo ----
+                  echo
+                done
+              mode: '755'
+              owner: ec2-user
+              group: ec2-user
+            /home/ec2-user/startprocesses.sh:
+              content: !Sub |
+                #!/bin/bash
+                
+                # startprocesses.sh
+                
+                # Start the sshd and wwsh services in the background.
+                # In most cases, you will only use this in the Docker container.
+                
+                # Generate a listing of the current environment variables
+                # so we can see what the container is receiving.
+                env > /tmp/environmentvariables
+                chmod 644 /tmp/environmentvariables
+                
+                # Create /etc/profile.d/ecs.sh with definitions for all environment
+                # variables that begin with "TASKDEF_".  The file ecs.sh will be
+                # sourced by the bash shell upon login.
+                #
+                # Grab the environment variables and parse them using AWK.
+                # Use the equal sign (=) as the field separator.
+                # The environment variable name is the first field.
+                # The environment variable value is the second field.
+                # Enclose the value in single quotes (ASCII 39) because
+                # the Secrets Manager secret value string uses JSON with
+                # double # quotes.
+                #
+                # There must be a better way to do this...
+                
+                touch /etc/profile.d/ecs.sh
+                chmod 644 /etc/profile.d/ecs.sh
+
+                env | \
+                  grep "^TASKDEF_" | \
+                  awk -F= '{printf "export %s=%c%s%c\n", $1, 39, $2, 39 }' \
+                  >> /etc/profile.d/ecs.sh
+ 
+                nohup /usr/sbin/sshd -D -p 22 &
+
+                # Use the tail command to wait forever.
+                tail -f /dev/null
+              mode: '755'
+              owner: ec2-user
+              group: ec2-user
+            /home/ec2-user/dockerbuild.sh:
+              content: !Sub |
+                #!/bin/bash
+
+                # dockerbuild.sh
+                
+                # Build the Docker image with the same name as the repository.
+
+                # Since the ECR credential provider is installed, do a dummy pull
+                # to initialize the ECR cache.  This builds the .ecr/cache.json file.
+                # If this is not done, a credential error message will appear which
+                # causes no problems, but is not otherwise harmful.
+
+                cd /home/ec2-user
+                echo Initializing Docker cache with dummy pull...
+                docker pull ${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/${ECRRepository} >/dev/null 2>&1  
+                docker build --no-cache --tag ${ECRRepository} .
+                cd /
+              mode: '755'
+              owner: ec2-user
+              group: ec2-user
+            /home/ec2-user/dockerstart.sh:
+              content: !Sub |
+                #!/bin/bash
+                
+                # dockerstart.sh
+
+                # Start the docker container.
+
+                sudo su -c "docker run -it -p 22:22 ${ECRRepository}"
+              mode: '755'
+              owner: ec2-user
+              group: ec2-user
+            /home/ec2-user/cleanup.sh:
+              content: !Sub |
+                #!/bin/bash
+                
+                # cleanup.sh
+
+                # Clean up artifacts before deleting the CloudFormation stack.
+
+                echo deleting repository...
+                aws ecr delete-repository --repository-name ${ECRRepository} --force --output text
+
+                echo deregistering task definitions...
+                aws ecs list-task-definitions --output text | \
+                  grep "${TaskDefinition}" | \
+                  cut -f2 | \
+                  xargs \
+                    --max-lines=1 \
+                    --no-run-if-empty \
+                    aws ecs deregister-task-definition --task-definition 
+
+                echo stopping tasks...
+                aws ecs list-tasks --output text --cluster ${ECSCluster} | \
+                  cut -f2 | \
+                  xargs \
+                    --max-lines=1 \
+                    --no-run-if-empty \
+                    aws ecs stop-task --cluster ${ECSCluster} --task 
+              mode: '755'
+              owner: ec2-user
+              group: ec2-user
+            /home/ec2-user/.docker/config.json:
+              content: '{ "credsStore": "ecr-login" }'
+              mode: '644'
+              owner: ec2-user
+              group: ec2-user
+            /home/ec2-user/dockertagandpush.sh:
+              content: !Sub |
+                #!/bin/bash
+                
+                # dockertagandpush.sh
+                
+                # Get login credentials to ECR. - Supressing this because of credential helper
+                # Tag the Docker image with the repository.
+                # Push the image to the repository.
+
+                # Commenting this section out because credential helper is installed
+                # echo Getting the repository credentials - ignore credential messages...
+                # $(aws ecr get-login --no-include-email --region ${AWS::Region} )
+                
+                echo Tagging the image...
+                docker tag ${ECRRepository} ${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/${ECRRepository}
+                echo Pushing the image to the repository...
+                docker push ${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/${ECRRepository}
+              mode: '755'
+              owner: ec2-user
+              group: ec2-user
+            /home/ec2-user/createservicelinkedrole.sh:
+              content: !Sub |
+                #!/bin/bash
+                
+                # createservicelinkedrole.sh
+
+                # Create the service-linked role for ECS
+
+                sudo su -c "aws iam create-service-linked-role --aws-service-name ecs.amazonaws.com"
+              mode: '755'
+              owner: ec2-user
+              group: ec2-user
+            /home/ec2-user/createsecret.sh:
+              content: !Sub |
+                #!/bin/bash
+                
+                # createsecret.sh
+
+                # Create the secret for the database password.
+
+                if [ $# -ne 1 ]
+                then
+                  echo usage: $0 SecretName
+                  exit 1
+                fi
+
+                SECRET_STRING=$( jq --null-input --compact-output \
+                --arg un "${DBMasterUser.RandomString}" \
+                --arg pw "${DBMasterPassword.RandomString}" \
+                --arg en "mysql" \
+                --arg hn "${DBInstance.Endpoint.Address}" \
+                --arg pt "3306" \
+                --arg db "${DBName}" \
+                --arg di "${DBInstance}" \
+                '{username: $un, password: $pw, engine: $en, host: $hn, port: $pt, dbname: $db, dbInstanceIdentifier: $di}' )
+
+                aws secretsmanager create-secret --name $1 --secret-string "$SECRET_STRING"
+              mode: '755'
+              owner: ec2-user
+              group: ec2-user
+            /home/ec2-user/Dockerfile:
+              content: !Sub |
+                FROM amazonlinux
+                
+                # Install core modules
+                RUN yum update -y \
+                &&  amazon-linux-extras install lamp-mariadb10.2-php7.2 \
+                &&  yum install -y \
+                      jq \
+                      python3 \
+                      unzip \
+                      wget \
+                      openssh-server \
+                      openssh-clients \
+                      procps \
+                      sudo
+                
+                # Set up ssh keys and allow password authentication for ease
+                RUN ssh-keygen -A \
+                &&  sed \
+                      -i \
+                      -e "s/PasswordAuthentication no/PasswordAuthentication yes/" \
+                      /etc/ssh/sshd_config
+
+                # Get the latest AWS CLI
+                WORKDIR /tmp
+                RUN wget -q https://s3.amazonaws.com/aws-cli/awscli-bundle.zip \
+                &&  unzip -q awscli-bundle.zip \
+                && ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws \
+                && rm -r ./awscli-bundle awscli-bundle.zip
+                WORKDIR /
+                
+                # Create user and group, both named ec2-user for consistency
+                RUN groupadd -g 1000 ec2-user \
+                &&  useradd -m --no-log-init -g 1000 ec2-user \
+                &&  echo ec2-user:${EC2UserPassword.RandomString}|chpasswd \
+                &&  echo 'ec2-user ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+
+                # Create the AWS config file to set the region
+                WORKDIR /home/ec2-user
+                RUN mkdir .aws
+                COPY .aws/config .aws/config
+                RUN chown 640 .aws/config \
+                &&  chown -R ec2-user:ec2-user .aws
+                WORKDIR /
+
+                # Copy over the main shell scripts and set their permissions
+
+                WORKDIR /home/ec2-user
+                COPY --chown=ec2-user:ec2-user \
+                  mysql.oldway.sh \
+                  mysql.newway.sh \
+                  displaysecretversions.sh \
+                  startprocesses.sh \
+                  ./
+
+                RUN chmod 750 \
+                  mysql.oldway.sh \
+                  mysql.newway.sh \
+                  displaysecretversions.sh \
+                  startprocesses.sh
+                WORKDIR /
+
+                CMD /home/ec2-user/startprocesses.sh
+                EXPOSE 22
+              mode: '644'
+              owner: ec2-user
+              group: ec2-user
+
+    CreationPolicy:
+      ResourceSignal:
+        Timeout: PT15M
+
+    Properties:
+      AvailabilityZone: !Select [0, !Split [",", !GetAtt VpcEndpointServiceAzs.Azs]]
+      IamInstanceProfile: !Ref BastionProfile
+      ImageId: !Ref AmazonLinux2AmiId
+      InstanceInitiatedShutdownBehavior: stop
+      InstanceType: t2.micro
+      Monitoring: true
+      NetworkInterfaces:
+      - AssociatePublicIpAddress: true
+        DeviceIndex: '0'
+        GroupSet:
+        - !Ref BastionSG
+        SubnetId: !Ref DemoSubnet01
+      Tags:
+      - Key: Name
+        Value: !Join [ '', [ Ref: NamePrefix, '-host' ]]
+      - Key: Project
+        Value: !Ref ProjectTag
+      Tenancy: default
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash -xe
+          yum update -y
+          amazon-linux-extras install lamp-mariadb10.2-php7.2 docker
+          yum install -y amazon-ecr-credential-helper jq python3
+
+          cd /tmp
+          wget -q https://s3.amazonaws.com/aws-cli/awscli-bundle.zip
+          unzip -q awscli-bundle.zip
+          ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
+          rm -r ./awscli-bundle awscli-bundle.zip
+          cd /
+
+          sed -i -e "s/PasswordAuthentication no/PasswordAuthentication yes/" /etc/ssh/sshd_config
+
+          # Create the Session Manager ssm-user id and group. These normally
+          # do not get created until the first time Session Manager is used.
+          # Creating them now makes it possible to add the user to the docker
+          # group and save some steps later.
+
+          groupadd -g 1001 ssm-user
+          useradd -u 1001 -g 1001 ssm-user
+          cd /etc/sudoers.d 
+          echo "ssm-user ALL=(ALL) NOPASSWD:ALL" > ssm-agent-users
+          cd /
+
+          echo ec2-user:${EC2UserPassword.RandomString}|chpasswd
+          usermod -a -G docker ec2-user
+          chmod 755 /home/ec2-user
+          echo ssm-user:${EC2UserPassword.RandomString}|chpasswd
+          usermod -a -G docker ssm-user
+          chmod 755 /home/ssm-user
+          systemctl start docker
+          systemctl enable docker
+
+          # Disable sshd.  We do not need it initially because we are using
+          # Systems Manager Session Manager to access the system.
+
+          systemctl stop sshd
+          systemctl disable sshd
+
+          # Uncomment the line below if you want to test sshd.
+          # Leave the line below commented if you are going to test sshd
+          # on Docker directly on this Amazon EC2 instance to avoid port
+          # conflicts.
+
+          # systemctl start sshd
+
+          /opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource Bastion --region ${AWS::Region}
+
+          mysql -p${DBMasterPassword.RandomString} -u ${DBMasterUser.RandomString} -P ${DBPort} -h ${DBInstance.Endpoint.Address} <<EOF
+          USE ${DBName}
+          CREATE TABLE bookinfo (BookId int, BookTitle varchar(255), BookAuthor varchar(255));
+          INSERT INTO bookinfo (BookId, BookTitle, BookAuthor) VALUES (1, "A Tale of Two Cities", "Charles Dickens");
+          EOF
+
+          /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackName} --resource Bastion --region ${AWS::Region}
+
+# LambdaExecutionRole - Lambda excution role for our Lambda functions
+#
+# I am using the same Lambda execution role for all of the functions.
+# In a production scenario, I would use separate Lambda roles tailored to
+# each Lambda function to enforce the principle of least privilege.
+
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Path: '/'
+      Policies:
+      - PolicyName: root
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - logs:CreateLogGroup
+            - logs:CreateLogStream
+            - logs:PutLogEvents
+            Resource: arn:aws:logs:*:*:*
+          - Effect: Allow
+            Action:
+            - ec2:DescribeVpcEndpointServices
+            Resource: '*'
+
+# RandomStrFunction - Generate a string of random characters
+#
+# This AWS Lambda function is used to generate a random string
+# of letters. We'll use the Python string module to do this.
+# You can change the composition of the string by changing the
+# methods that are used.
+
+  RandomStrFunction:
+    Type: AWS::Lambda::Function
+    Properties: 
+      Description: 'Generate a random string of characters'
+      Handler: index.handler
+      MemorySize: 128
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Runtime: 'python3.6'
+      Timeout: 30
+      Tags: 
+      - Key: Name
+        Value: !Join [ '', [ Ref: NamePrefix, 'rndstrlambda' ]]
+      - Key: Project
+        Value: !Ref ProjectTag
+      Code:
+        ZipFile: |
+          import json
+          import boto3
+          import cfnresponse
+          import string
+          import random
+          def handler(event, context):
+            if event['RequestType'] == 'Delete':
+              responseData = {}      
+              cfnresponse.send(event, context, cfnresponse.SUCCESS, responseData)
+              return
+            
+            StringLength=int(event['ResourceProperties']['StringLength'])
+            
+            if StringLength <= 0:
+              responseData = {}
+              cfnresponse.send(event, context, cfnresponse.FAILED)
+            else:
+              responseData = {}
+              chars=string.ascii_letters # change this to use other kinds of characters
+              
+              responseData['RandomString'] = ''.join(random.choice(chars) for _ in range(StringLength))
+              cfnresponse.send(event, context, cfnresponse.SUCCESS, responseData)
+            
+            return
+
+# DBMasterUser - The AWS Lambda-backed resource for generating a random DB username
+#
+# Parameters
+#
+# ServiceToken - a pointer to the AWS Lambda function
+# StringLength - the length of the random string to generate
+
+  DBMasterUser:
+    Type: Custom::DBMasterUser
+    Properties:
+      ServiceToken: !GetAtt RandomStrFunction.Arn
+      StringLength: '8'
+
+# DBMasterPassword - The AWS Lambda-backed resource for generating a random DB password
+#
+# Parameters
+#
+# ServiceToken - a pointer to the AWS Lambda function
+# StringLength - the length of the random string to generate
+
+  DBMasterPassword:
+    Type: Custom::DBMasterPassword
+    Properties:
+      ServiceToken: !GetAtt RandomStrFunction.Arn
+      StringLength: '8'
+
+# EC2UserPassword - The AWS Lambda-backed resource for generating a random ec2-user password
+#
+# Parameters
+#
+# ServiceToken - a pointer to the AWS Lambda function
+# StringLength - the length of the random string to generate
+
+  EC2UserPassword:
+    Type: Custom::EC2UserPassword
+    Properties:
+      ServiceToken: !GetAtt RandomStrFunction.Arn
+      StringLength: '8'
+
+# VpcEndpointServiceAzsFunction
+#
+# This is the AWS Lambda function that supports a CloudFormation custom
+# resource that is used to look up the available Availability Zones for
+# a VPC interface endpoint service.  VPC interface endpoints may only be
+# offered in some, perhaps not all, AZs within a given region. This function
+# can help you to design CloudFormation templates that choose subnets based
+# on their ability to provide such endpoint interfaces.
+#
+# Resource properties (e.g. input "parameters") for the function:
+#
+# ServiceName - required - string - the name of the service.  This should be
+# something like 'com.amazonaws.us-east-1.secretsmanager'
+#
+# DesiredNumAzs - required - string - the minimum number of Availability Zones
+# that must offer the service (usually '2' or '3').  This should be a whole
+# number (i.e. a non-negative integer).
+#
+#
+# Return values via GetAtt:
+#
+# NumAzs - string - the number of Availability Zones that offer the interface
+# endpoint.
+#
+# Azs - string - a comma-separated list of the AZs.
+#
+#
+# Errors:
+#
+# If there are any errors, the Lambda function returns a FAILED status which
+# normally triggers a rollback in AWS CloudFormation.   You can see the errors
+# in the Amazon CloudWatch Logs.
+#
+# Notes:
+#
+# (1) Lambda function code inside of CloudFormation templates cannot exceed
+# 4096 characters.
+
+
+  VpcEndpointServiceAzsFunction:
+    Type: AWS::Lambda::Function
+    Properties: 
+      Description: 'Look up the AZs that are available for a VPC endpoint for a service'
+      Handler: index.handler
+      MemorySize: 128
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Runtime: 'python3.6'
+      Timeout: 30
+      Code:
+        ZipFile: |
+          import boto3
+          import cfnresponse
+          import uuid
+          import json
+
+          def handler(event, context):
+
+            responseData = {}      
+            responseData['StackId'] = event['StackId']
+            responseData['RequestId'] = event['RequestId']
+            responseData['LogicalResourceId'] = event['LogicalResourceId']
+
+            if event['RequestType'] == 'Delete':
+              responseData['Status'] = cfnresponse.SUCCESS
+              cfnresponse.send(event, context, cfnresponse.SUCCESS, responseData)
+              return
+
+            # Since we are creating or updating the resource, create a new
+            # PhysicalResourceId.
+            
+            responseData['PhysicalResourceId'] = (
+              'VpcEndpointServiceAZs' +
+              str(uuid.uuid1())
+            )
+
+            try:
+              desiredNumAzsStr = event['ResourceProperties']['DesiredNumAzs']
+              desiredNumAzs = int(desiredNumAzsStr)
+            except:
+              responseData['Status'] = cfnresponse.FAILED
+              responseData['Reason'] = (
+                'DesiredNumAzs is required and must be a whole number'
+              )
+              print(responseData['Reason'])
+              cfnresponse.send(event, context, cfnresponse.FAILED, responseData)
+              return
+
+            if desiredNumAzs < 0:
+              responseData['Status'] = cfnresponse.FAILED
+              responseData['Reason'] = (
+                'DesiredNumAzs is required and must be a whole number'
+              )
+              print(responseData['Reason'])
+              cfnresponse.send(event, context, cfnresponse.FAILED, responseData)
+              return
+
+            try:
+              ec2=boto3.client('ec2')
+            except:
+              responseData['Status'] = cfnresponse.FAILED
+              responseData['Reason'] = 'unable to set up ec2 client'
+              print(responseData['Reason'])
+              cfnresponse.send(event, context, cfnresponse.FAILED, responseData)
+              return
+            
+            try:
+              serviceName = event['ResourceProperties']['ServiceName']
+              response = ec2.describe_vpc_endpoint_services(
+                ServiceNames = [ serviceName ]
+              )
+            except:
+              responseData['Status'] = cfnresponse.FAILED
+              responseData['Reason'] = 'unable to rerieve endpoint service info'
+              print(responseData['Reason'])
+              cfnresponse.send(event, context, cfnresponse.FAILED, responseData)
+              return
+            
+            print(json.dumps(response))
+            
+            numberOfServices = len(response['ServiceDetails'])
+            if numberOfServices != 1:
+              responseData['Status'] = cfnresponse.FAILED
+              responseData['Reason'] = (
+                'number of services should be 1 but is: ' +
+                str(numberOfServices)
+              )
+              print(responseData['Reason'])
+              cfnresponse.send(event, context, cfnresponse.FAILED, responseData)
+              return
+            
+            Azs = response['ServiceDetails'][0]['AvailabilityZones']
+            numAzs = len(Azs)
+            if numAzs < desiredNumAzs:
+              responseData['Status'] = cfnresponse.FAILED
+              responseData['Reason'] = (
+                'insufficient number of availability zones - found: ' + 
+                str(numAzs)
+              )
+              print(responseData['Reason'])
+              cfnresponse.send(event, context, cfnresponse.FAILED, responseData)
+              return
+            
+            responseData['Status'] = cfnresponse.SUCCESS
+            responseData['NumAzs'] = str(numAzs)
+            responseData['Azs'] = ','.join(Azs)
+            
+            cfnresponse.send(event, context, cfnresponse.SUCCESS, responseData)
+            return
+
+  VpcEndpointServiceAzs:
+    Type: Custom::VpcEndpointServiceAzs
+    Properties:
+      ServiceToken: !GetAtt VpcEndpointServiceAzsFunction.Arn
+      ServiceName:
+        !Join
+        - ''
+        - - 'com.amazonaws.'
+          - !Ref 'AWS::Region'
+          - '.secretsmanager'
+      DesiredNumAzs: 2
+
+# DBSG - The security group for the RDS database
+
+  DBSG:
+    Type: AWS::EC2::SecurityGroup
+    DependsOn: VpcName
+    Properties:
+      GroupDescription: Enable MySQL access via the selected DBPort
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: !Ref DBPort
+        ToPort: !Ref DBPort
+        CidrIp: 10.200.0.0/16
+      Tags:
+      - Key: Name
+        Value: !Join [ '', [ Ref: NamePrefix, '-dbsg' ]]
+      - Key: Project
+        Value: !Ref ProjectTag
+      VpcId: !Ref VpcName
+
+# DBSGSelfReference - We need to make the security group self-
+# referential to handle communication to and from Secrets Manager.
+
+  DBSGSelfReference:
+    Type: "AWS::EC2::SecurityGroupIngress"
+    Properties: 
+      FromPort: 0
+      GroupId: !GetAtt DBSG.GroupId
+      IpProtocol: tcp
+      SourceSecurityGroupId: !GetAtt DBSG.GroupId 
+      ToPort: 65535
+
+
+# DBSubnetGroup - Database subnet group
+#
+# We need this even for single AZ databases.
+
+  DBSubnetGroup:
+    Type: AWS::RDS::DBSubnetGroup
+    Properties: 
+      DBSubnetGroupDescription: Subnet group for RDS database
+      SubnetIds:
+        - !Ref DemoSubnet01
+        - !Ref DemoSubnet02
+      Tags:
+      - Key: Name
+        Value: !Join [ '', [ Ref: NamePrefix, '-dbsubg' ]]
+      - Key: Project
+        Value: !Ref ProjectTag
+
+# DBInstance - Our test database.
+#
+# Note that this is a private RDS database instance.   The database resides
+# on subnets that we have created based on the presence of an AWS Secrets
+# Manager endpoint.  Note that we are also using a random username and
+# password to avoid the risk of static passwords.  The password will change
+# after the first rotation.
+
+  DBInstance:
+    Type: AWS::RDS::DBInstance
+    DependsOn: VpcIgwAttachment
+    DeletionPolicy: Delete
+    Properties:
+      AllocatedStorage: 5
+      AllowMajorVersionUpgrade: false
+      AutoMinorVersionUpgrade: true
+      AvailabilityZone: !Select [0, !Split [",", !GetAtt VpcEndpointServiceAzs.Azs]]
+      BackupRetentionPeriod: 0
+      DBInstanceClass: db.t2.micro
+      DBName: !Ref DBName
+      DBSubnetGroupName: !Ref DBSubnetGroup
+      Engine: 'mysql'
+      EngineVersion: '5.7'
+      MasterUsername: !GetAtt DBMasterUser.RandomString
+      MasterUserPassword: !GetAtt DBMasterPassword.RandomString
+      MultiAZ: false
+      Port: !Ref DBPort
+      PubliclyAccessible: False
+      StorageType: gp2
+      Tags:
+      - Key: Name
+        Value: !Join [ '', [ Ref: NamePrefix, '-db' ]]
+      - Key: Project
+        Value: !Ref ProjectTag
+      VPCSecurityGroups:
+        - !Ref DBSG
+
+# SecretsManagerEndpoint - Interface endpoint for Secrets Manager
+
+  SecretsManagerEndpoint:
+    Type: 'AWS::EC2::VPCEndpoint'
+    Properties:
+      VpcEndpointType: Interface
+      PrivateDnsEnabled: True
+      SubnetIds:
+      - !Ref DemoSubnet01
+      - !Ref DemoSubnet02
+      SecurityGroupIds:
+      - !Ref DBSG
+      - !Ref BastionSG
+      ServiceName: !Join 
+      - ''
+      - - com.amazonaws.
+        - !Ref 'AWS::Region'
+        - .secretsmanager
+      VpcId: !Ref VpcName
+
+# EC2UserPassword - The AWS Lambda-backed resource for generating a random ec2-user password
+#
+# Parameters
+#
+# ServiceToken - a pointer to the AWS Lambda function
+# StringLength - the length of the random string to generate
+
+  EC2UserPassword:
+    Type: Custom::EC2UserPassword
+    Properties:
+      ServiceToken: !GetAtt RandomStrFunction.Arn
+      StringLength: '8'
+
+# TaskRole - ECS Task Role
+
+  TaskRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - 'ecs-tasks.amazonaws.com'
+          Action:
+          - sts:AssumeRole
+      Path: '/'
+      Policies:
+      - PolicyName: !Join [ '', [ Ref: NamePrefix, '-secretsmgr' ]]
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - secretsmanager:*
+            Resource: '*'
+
+# TaskExecutionRole - ECS Task Execution Role
+
+  TaskExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - 'ecs-tasks.amazonaws.com'
+          Action:
+          - sts:AssumeRole
+      Path: '/'
+      ManagedPolicyArns:
+      - arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
+      Policies:
+      - PolicyName: !Join [ '', [ Ref: NamePrefix, '-secretsmgr' ]]
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - secretsmanager:GetSecretValue
+            - kms:Decrypt
+            Resource: '*'
+
+# TaskDefinition - ECS Task Definition
+
+  TaskDefinition:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      TaskRoleArn: !GetAtt TaskRole.Arn
+      ExecutionRoleArn: !GetAtt TaskExecutionRole.Arn
+      NetworkMode: awsvpc
+      ContainerDefinitions:
+      - Image: !Sub
+          ${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/${ECRRepository}
+        Name: smdemo
+        PortMappings:
+        - ContainerPort: 22
+          HostPort: 22
+          Protocol: tcp
+        Essential: true
+        ReadonlyRootFilesystem: false
+        LogConfiguration:
+          LogDriver: awslogs
+          Options:
+            awslogs-group: !Ref LogGroup
+            awslogs-region: !Ref AWS::Region
+            awslogs-stream-prefix: smdemo
+        Environment:
+        - Name: 'TASKDEF_ENVVAR'
+          Value: 'my test environment value'
+        Secrets:
+        - Name: 'TASKDEF_SECRET'
+          ValueFrom: !Sub
+            'arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:SECRETNAME'
+      RequiresCompatibilities:
+      - FARGATE
+      Cpu: 1024
+      Memory: 4096
+      Tags:
+      - Key: Name
+        Value: !Join [ '', [ Ref: NamePrefix, '-taskdef' ]]
+      - Key: Project
+        Value: !Ref ProjectTag
+
+# ECSCluster - ECS Cluster
+
+  ECSCluster:
+    Type: AWS::ECS::Cluster
+    Properties: 
+      Tags: 
+      - Key: Name
+        Value: !Join [ '', [ Ref: NamePrefix, '-ecscluster' ]]
+      - Key: Project
+        Value: !Ref ProjectTag
+
+# ECRRepository - Elastic Container Registry
+
+  ECRRepository:
+    Type: AWS::ECR::Repository
+    Properties: 
+      Tags:
+      - Key: Name
+        Value: !Join [ '', [ Ref: NamePrefix, '-ecr' ]]
+      - Key: Project
+        Value: !Ref ProjectTag
+
+Outputs:
+  BastionIP:
+    Description: Bastion IP address
+    Value: !GetAtt Bastion.PublicIp
+
+  DBInstance:
+    Description: RDS MySQL instance
+    Value: !Ref DBInstance
+
+  DBUser:
+    Description: RDS MySQL master user
+    Value: !GetAtt DBMasterUser.RandomString
+
+  DBPassword:
+    Description: RDS MySQL master user initial password
+    Value: !GetAtt DBMasterPassword.RandomString 
+
+  EC2UserPassword:
+    Description: User ec2-user password
+    Value: !GetAtt EC2UserPassword.RandomString 
+
+  ECRRepository:
+    Description: ECR Repository
+    Value: !Ref ECRRepository
+
+  ECSCluster:
+    Description: ECS Cluster
+    Value: !Ref ECSCluster
