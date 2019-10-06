@@ -16,24 +16,19 @@
 <!--                                                                                       -->
 # ___AWS Secrets Manager Workshop___
 
-## Introduction
+## Overview
 
-This repository contains modules that will help you learn how to use [AWS Secrets Manager](https://aws.amazon.com/secrets-manager/).  Additional modules will be developed to model different use cases.
+The Secrets Manager Workshop is a collection of individual "rounds" covering the usage of AWS Secrets Manager. Each round can be done separately and there is no dependency between the rounds. Each round (workshop) takes 1 hour.
 
-## Prerequisites
+* **Level**: 300
+* **Duration**: Each round takes one hour and can be done separately:
+* **CSF Functions**: Protect
+* **CAF Components**: Preventive
+* **Prerequisites**:
+    * AWS Account
+    * AWS IAM User (with admin permissions)
+    * Each round may have additional prerequsites
 
-### AWS Account
+## Get started
 
-In order to complete this workshop you'll need an AWS Account with admin access to services including Amazon EC2, Amazon RDS, Amazon VPC, and AWS Secrets Manager.
-
-### Region
-
-Choose an AWS Region that support the complete set of services covered in the material including Amazon RDS, Amazon VPC, and AWS Secrets Manager. Use the [Region Table](https://aws.amazon.com/about-aws/global-infrastructure/regional-product-services/) to determine which services are available in a Region.
-
-### Charges
-
-You will incur charges for the services used in these modules.  The pricing for each service is available on that service's pricing page.
-
-## Modules
-
-1. [Rotating a Secret for a private Amazon RDS database](1_RotatePrivateRDS)
+To get started, click [here](https://secrets-manager.awssecworkshops.com) to proceed to the workshop site.
