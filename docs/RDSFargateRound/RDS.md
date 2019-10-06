@@ -91,19 +91,33 @@ In this section, you will store the RDS database credentials in AWS Secrets Mana
 
 In this section, you will connect to the bastion host so you can run scripts that the CloudFormation template has created on the instance.  Complete all the steps below unless they are marked "optional."
 
-1. Connect to the bastion host using AWS Systems Manager Session Manager.
+1. Connect to the bastion host using AWS Systems Manager Session Manager.  To do this:
 
-2. After you login, use the **sudo su ec2-user** command since the ec2-user id is the owner of all the scripts.
+    1. Go to the Systems Manager console.
+    2. Select **Session Manager**.
+    3. Click **Start session**.
+    4. Select the radio button for the instance associated with the bastion host.
+    5. Click **Start session**.
 
-3. Change to the home directory of the ec2-user id by entering the **cd** command without any arguments.
+2. The scripts you will be using are owned by the ec2-user account.  Enter the command below to change your effective user id and directory to those of ec2-user:
 
-4. Use the **ls** command to list the contents of the home directory.  You will see two shell scripts.
+    **sudo su - ec2-user**
+
+4. Display the current directory using this command:
+
+    **ls**
+
+    You will see two shell scripts.
 
     * mysql.oldway.sh - This shell script connects to the database the "old" way, using a hard-coded password.
   
     * mysql.newway.sh - This shell script connects to the database the "new" way, using AWS Secrets Manager.
   
-5. View the file mysql.oldway.sh.  You can use the **cat** command to do this.  In the example below, the values PASSWORD, USER, and ENDPOINT represent the hard-coded database password, username, and host endpoint.
+5. View the file mysql.oldway.sh using this command:
+
+    **cat mysql.oldway.sh**
+
+    You will see contents similar to the lines below.  The values PASSWORD, USER, and ENDPOINT represent the hard-coded database password, username, and host endpoint.
 
         #/bin/bash
         
@@ -120,7 +134,7 @@ In this section, you will connect to the bastion host so you can run scripts tha
         -P 3306 \
         -h ENDPOINT
 
-6. Now let's try this script by running the following commands.  The first command invokes the script.  The subsequent commands select the database, display the table names in the database, query the rows in the table, and exit MySQL.
+6. Test the script mysql.oldway.sh using the commands shown below.  The first command invokes the script.  The subsequent commands select the database, display the table names in the database, query the rows in the table, and exit MySQL.  Note that MySQL commands end with a semicolon (";").
 
         ./mysql.oldway.sh
         use smdemo;
@@ -132,7 +146,11 @@ In this section, you will connect to the bastion host so you can run scripts tha
 
     ![AWS Secrets Manager old way before rotation](images/RDSMSQLoldpre.png)
 
-7. View the file mysql.newway.sh.  You can use the **cat** command to do this.  As mentioned above, for the sake of simplicity, the scripts used in the tutorial use *jq* to parse the secret value into shell variables to allow for easy command line manipulation. This is NOT a security best practice for a production environment. In a production environment, we recommend that you don't store passwords in environment variables, and work with them in plaintext at the command line.
+7. View the file mysql.newway.sh by entering this command:
+
+    **cat mysql.newway.sh**
+
+    As mentioned above, for the sake of simplicity, the scripts used in the tutorial use *jq* to parse the secret value into shell variables to allow for easy command line manipulation. This is NOT a security best practice for a production environment. In a production environment, we recommend that you don't store passwords in environment variables, and work with them in plaintext at the command line.
 
         #/bin/bash
         
@@ -156,7 +174,7 @@ In this section, you will connect to the bastion host so you can run scripts tha
         -P $port \
         -h $endpoint
 
-8. Now let's try this script by running the following commands.  The first command invokes the script.  **Note that you must specify the name of the secret!** The subsequent commands select the database, display the table names in the database, query the rows in the table, and exit MySQL.
+8. Run the mysql.newway.sh script by running the commands below.  The first command invokes the script.  **Note that you must specify the name of the secret!** In this example, the secret's name is *smdemo*. The subsequent commands select the database, display the table names in the database, query the rows in the table, and exit MySQL.
 
         ./mysql.newway.sh smdemo
         use smdemo;

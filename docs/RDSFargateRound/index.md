@@ -6,12 +6,17 @@ The Secrets Manager Workshop guides you through the use of AWS Secrets Manager. 
 * **Duration**: one hour
 * **CSF Functions**: Protect
 * **CAF Components**: Preventive
-* **Prerequisites**: AWS Account, IAM User (with admin permissions)
+* **Prerequisites**:
+    * AWS Account
+    * AWS IAM User with admin permissions
+    * Working knowledge of Amazon Linux 2
+    * Working knowledge of bohh Docker and AWS Fargate if you do the Fargate phase
+    * An ssh client and the ability to initiate outbound ssh connections
 
 !!! info "Before you Begin"
     __Please review the architecture diagram below.__
 
-## Workshop Architecture
+## Workshop architecture
 
 ![Workshop Architecture](images/RDSFargateArch.png)
 

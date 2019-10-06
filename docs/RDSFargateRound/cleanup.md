@@ -1,10 +1,28 @@
 # RDS and Fargate Round - Clean up
 
-!!! info  "Do not perform clean up if you are at an *AWS event* where the *Event Engine* is being used. This is handled automatically." 
+## Fargate-specific clean up
+
+If you did the Fargate phase of this workshop round, then do the steps in this section.  Otherwise, skip to the General clean up section below.
+
+1. If you are do not have a session open to the bastion host, then connect to the bastion host using AWS Systems Manager Session Manager.  To do this:
+
+    1. Go to the Systems Manager console.
+    2. Select **Session Manager**.
+    3. Click **Start session**.
+    4. Select the radio button for the instance associated with the bastion host.
+    5. Click **Start session**.
+
+2. The scripts you will be using are owned by the ec2-user account.  If you are not currently using ec2-user as your effective user id, then enter the command below to change your effective user id and directory to those of ec2-user:
+
+    **sudo su - ec2-user**
+
+## General clean up
+
+!!! info  "Do not perform general clean up if you are at an *AWS event* where the *Event Engine* is being used. This is handled automatically." 
 
 ??? info  "Click here if you're *not at an AWS event* or are using your own account" 
 
-    Now that you have seen how AWS Secrets Manager can rotate the credentials for a private database, please follow these steps to remove the resources you created, including the private database.
+    Now that you have seen how AWS Secrets Manager can rotate the credentials for a private database and, optionally, with AWS Fargate, please follow these steps to remove the resources you created, including the private database.
 
     1. [Delete the secret you created in Secrets Manager](https://docs.aws.amazon.com/secretsmanager/latest/userguide/manage_delete-restore-secret.html?shortFooter=true).  Note that when you delete a secret, the deletion is scheduled for a minimum of seven days in the future. 
 
