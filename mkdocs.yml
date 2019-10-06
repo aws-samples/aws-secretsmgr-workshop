@@ -1,7 +1,6 @@
 # Project information
 
 site_name: Secrets Manager Workshop
-site_short_name: Secrets Manager Workshop
 site_description: 'A hands-on workshop to learn about using Secrets Manager.'
 site_author: 'aws-security-workshops@amazon.com'
 site_url: 'https://secrets-manager.awssecworkshops.com/'
