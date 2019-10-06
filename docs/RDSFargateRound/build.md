@@ -22,17 +22,17 @@
     ---
 
     **US East 1 (N. Virginia)** &nbsp; &nbsp; &nbsp; &nbsp;
-    <a href="https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=pww&templateURL=https://s3.amazonaws.com/sa-security-specialist-workshops-us-east-1/secrets-manager-workshop/RDSFargate.yml" target="_blank">![Deploy in us-east-1](images/deploy-to-aws.png)</a>
+    <a href="https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=smdemo&templateURL=https://s3.amazonaws.com/sa-security-specialist-workshops-us-east-1/secrets-manager-workshop/RDSFargate.yml" target="_blank">![Deploy in us-east-1](images/deploy-to-aws.png)</a>
 
     ---
 
     **US East 2 (Ohio)** &nbsp; &nbsp; &nbsp; &nbsp;
-    <a href="https://console.aws.amazon.com/cloudformation/home?region=us-east-2#/stacks/new?stackName=pww&templateURL=https://s3.amazonaws.com/sa-security-specialist-workshops-us-east-1/secrets-manager-workshop/RDSFargate.yml" target="_blank">![Deploy in us-east-2](images/deploy-to-aws.png)</a>
+    <a href="https://console.aws.amazon.com/cloudformation/home?region=us-east-2#/stacks/new?stackName=smdemo&templateURL=https://s3.amazonaws.com/sa-security-specialist-workshops-us-east-1/secrets-manager-workshop/RDSFargate.yml" target="_blank">![Deploy in us-east-2](images/deploy-to-aws.png)</a>
 
     ---
 
     **US West 2 (Oregon)** &nbsp; &nbsp; &nbsp; &nbsp;
-    <a href="https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?stackName=pww&templateURL=https://s3.amazonaws.com/sa-security-specialist-workshops-us-east-1/secrets-manager-workshop/RDSFargate.yml" target="_blank">![Deploy in us-west-2](images/deploy-to-aws.png)</a>
+    <a href="https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?stackName=smdemo&templateURL=https://s3.amazonaws.com/sa-security-specialist-workshops-us-east-1/secrets-manager-workshop/RDSFargate.yml" target="_blank">![Deploy in us-west-2](images/deploy-to-aws.png)</a>
 
     ---
 
