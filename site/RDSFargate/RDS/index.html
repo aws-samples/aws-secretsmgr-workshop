@@ -10,10 +10,10 @@
       <meta name="viewport" content="width=device-width,initial-scale=1">
       <meta http-equiv="x-ua-compatible" content="ie=edge">
       
-        <meta name="description" content="A hands-on workshop to learn about using Secrets Manager.">
+        <meta name="description" content="A collection of hands-on Builder Sesssions to learn about using Secrets Manager.">
       
       
-        <link rel="canonical" href="https://secrets-manager.awssecworkshops.com/RDSFargateRound/RDS/">
+        <link rel="canonical" href="https://secrets-manager.awssecworkshops.com/RDSFargate/RDS/">
       
       
         <meta name="author" content="aws-security-workshops@amazon.com">
@@ -42,7 +42,7 @@
     
     
       
-        <title>RDS phase - Secrets Manager Workshop</title>
+        <title>RDS - Secrets Manager Builder Sessions</title>
       
     
     
@@ -157,10 +157,10 @@
             
               
                 <span class="md-header-nav__topic">
-                  Secrets Manager Workshop
+                  Secrets Manager Builder Sessions
                 </span>
                 <span class="md-header-nav__topic">
-                  RDS phase
+                  RDS
                 </span>
               
             
@@ -248,16 +248,14 @@
       
         
 
-  
-
-<nav class="md-tabs md-tabs--active" data-md-component="tabs">
+<nav class="md-tabs" data-md-component="tabs">
   <div class="md-tabs__inner md-grid">
     <ul class="md-tabs__list">
       
         
   <li class="md-tabs__item">
     
-      <a href="../.." title="Overview" class="md-tabs__link">
+      <a href="../.." title="Overview" class="md-tabs__link md-tabs__link--active">
         Overview
       </a>
     
@@ -269,7 +267,7 @@
   
     <li class="md-tabs__item">
       
-        <a href="../" title="RDS and Fargate" class="md-tabs__link md-tabs__link--active">
+        <a href="../../RDSFargateRound/index.md" title="RDS and Fargate" class="md-tabs__link">
           RDS and Fargate
         </a>
       
@@ -317,7 +315,7 @@
   <!-- Site title -->
   <label class="md-nav__title md-nav__title--site" for="__drawer">
     <a href="https://secrets-manager.awssecworkshops.com/"
-        title="Secrets Manager Workshop" class="md-nav__button md-logo">
+        title="Secrets Manager Builder Sessions" class="md-nav__button md-logo">
       
         <img src="../../assets/images/aws_smile_logo.png" width="48" height="48" />
       
@@ -367,12 +365,10 @@
       
       
 
-  
 
-
-  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+  <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2" checked>
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2">
     
     <label class="md-nav__link" for="nav-2">
       RDS and Fargate
@@ -390,7 +386,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../" title="Scenario" class="md-nav__link">
+    <a href="../../RDSFargateRound/index.md" title="Scenario" class="md-nav__link">
       Scenario
     </a>
   </li>
@@ -402,7 +398,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../getting-started/" title="Getting started" class="md-nav__link">
+    <a href="../../RDSFargateRound/getting-started.md" title="Getting started" class="md-nav__link">
       Getting started
     </a>
   </li>
@@ -414,7 +410,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../build/" title="Build phase" class="md-nav__link">
+    <a href="../../RDSFargateRound/build.md" title="Build phase" class="md-nav__link">
       Build phase
     </a>
   </li>
@@ -424,91 +420,11 @@
           
           
 
-  
 
-
-  <li class="md-nav__item md-nav__item--active">
-    
-    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    
-      
-    
-    
-      <label class="md-nav__link md-nav__link--active" for="__toc">
-        RDS phase
-      </label>
-    
-    <a href="./" title="RDS phase" class="md-nav__link md-nav__link--active">
+  <li class="md-nav__item">
+    <a href="../../RDSFargateRound/RDS.md" title="RDS phase" class="md-nav__link">
       RDS phase
     </a>
-    
-      
-<nav class="md-nav md-nav--secondary">
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">Table of contents</label>
-    <ul class="md-nav__list" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#overview" title="Overview" class="md-nav__link">
-    Overview
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#view-the-cloudformation-stack" title="View the CloudFormation stack" class="md-nav__link">
-    View the CloudFormation stack
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#store-the-secret" title="Store the secret" class="md-nav__link">
-    Store the secret
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#access-the-database-before-the-rotation" title="Access the database before the rotation" class="md-nav__link">
-    Access the database before the rotation
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#rotate-the-secret" title="Rotate the secret" class="md-nav__link">
-    Rotate the secret
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#access-the-database-after-the-rotation" title="Access the database after the rotation" class="md-nav__link">
-    Access the database after the rotation
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#conclusion" title="Conclusion" class="md-nav__link">
-    Conclusion
-  </a>
-  
-</li>
-      
-      
-      
-      
-      
-    </ul>
-  
-</nav>
-    
   </li>
 
         
@@ -518,7 +434,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../Fargate/" title="Fargate phase" class="md-nav__link">
+    <a href="../../RDSFargateRound/Fargate.md" title="Fargate phase" class="md-nav__link">
       Fargate phase
     </a>
   </li>
@@ -530,7 +446,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../cleanup/" title="Clean up phase" class="md-nav__link">
+    <a href="../../RDSFargateRound/cleanup.md" title="Clean up phase" class="md-nav__link">
       Clean up phase
     </a>
   </li>
@@ -650,7 +566,7 @@
             <article class="md-content__inner md-typeset">
               
                 
-                  <a href="https://github.com/aws-samples/aws-secretsmgr-workshop/edit/master/docs/RDSFargateRound/RDS.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
+                  <a href="https://github.com/aws-samples/aws-secretsmgr-workshop/edit/master/docs/RDSFargate/RDS.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
                 
                 
                 <!--                                                                                       -->
@@ -958,41 +874,6 @@ quit;
       
         
 <footer class="md-footer">
-  
-    <div class="md-footer-nav">
-      <nav class="md-footer-nav__inner md-grid">
-        
-          <a href="../build/" title="Build phase" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
-            <div class="md-flex__cell md-flex__cell--shrink">
-              <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
-            </div>
-            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
-              <span class="md-flex__ellipsis">
-                <span class="md-footer-nav__direction">
-                  Previous
-                </span>
-                Build phase
-              </span>
-            </div>
-          </a>
-        
-        
-          <a href="../Fargate/" title="Fargate phase" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
-            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
-              <span class="md-flex__ellipsis">
-                <span class="md-footer-nav__direction">
-                  Next
-                </span>
-                Fargate phase
-              </span>
-            </div>
-            <div class="md-flex__cell md-flex__cell--shrink">
-              <i class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
-            </div>
-          </a>
-        
-      </nav>
-    </div>
   
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">

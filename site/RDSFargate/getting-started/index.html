@@ -10,10 +10,10 @@
       <meta name="viewport" content="width=device-width,initial-scale=1">
       <meta http-equiv="x-ua-compatible" content="ie=edge">
       
-        <meta name="description" content="A hands-on workshop to learn about using Secrets Manager.">
+        <meta name="description" content="A collection of hands-on Builder Sesssions to learn about using Secrets Manager.">
       
       
-        <link rel="canonical" href="https://secrets-manager.awssecworkshops.com/RDSFargateRound/build/">
+        <link rel="canonical" href="https://secrets-manager.awssecworkshops.com/RDSFargate/getting-started/">
       
       
         <meta name="author" content="aws-security-workshops@amazon.com">
@@ -42,7 +42,7 @@
     
     
       
-        <title>Build phase - Secrets Manager Workshop</title>
+        <title>RDS and Fargate Round - Getting Started - Secrets Manager Builder Sessions</title>
       
     
     
@@ -102,7 +102,7 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
     
-      <a href="#rds-and-fargate-round-build-phase" tabindex="1" class="md-skip">
+      <a href="#rds-and-fargate-round-getting-started" tabindex="1" class="md-skip">
         Skip to content
       </a>
     
@@ -157,10 +157,10 @@
             
               
                 <span class="md-header-nav__topic">
-                  Secrets Manager Workshop
+                  Secrets Manager Builder Sessions
                 </span>
                 <span class="md-header-nav__topic">
-                  Build phase
+                  RDS and Fargate Round - Getting Started
                 </span>
               
             
@@ -248,16 +248,14 @@
       
         
 
-  
-
-<nav class="md-tabs md-tabs--active" data-md-component="tabs">
+<nav class="md-tabs" data-md-component="tabs">
   <div class="md-tabs__inner md-grid">
     <ul class="md-tabs__list">
       
         
   <li class="md-tabs__item">
     
-      <a href="../.." title="Overview" class="md-tabs__link">
+      <a href="../.." title="Overview" class="md-tabs__link md-tabs__link--active">
         Overview
       </a>
     
@@ -269,7 +267,7 @@
   
     <li class="md-tabs__item">
       
-        <a href="../" title="RDS and Fargate" class="md-tabs__link md-tabs__link--active">
+        <a href="../../RDSFargateRound/index.md" title="RDS and Fargate" class="md-tabs__link">
           RDS and Fargate
         </a>
       
@@ -317,7 +315,7 @@
   <!-- Site title -->
   <label class="md-nav__title md-nav__title--site" for="__drawer">
     <a href="https://secrets-manager.awssecworkshops.com/"
-        title="Secrets Manager Workshop" class="md-nav__button md-logo">
+        title="Secrets Manager Builder Sessions" class="md-nav__button md-logo">
       
         <img src="../../assets/images/aws_smile_logo.png" width="48" height="48" />
       
@@ -367,12 +365,10 @@
       
       
 
-  
 
-
-  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+  <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2" checked>
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2">
     
     <label class="md-nav__link" for="nav-2">
       RDS and Fargate
@@ -390,7 +386,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../" title="Scenario" class="md-nav__link">
+    <a href="../../RDSFargateRound/index.md" title="Scenario" class="md-nav__link">
       Scenario
     </a>
   </li>
@@ -402,7 +398,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../getting-started/" title="Getting started" class="md-nav__link">
+    <a href="../../RDSFargateRound/getting-started.md" title="Getting started" class="md-nav__link">
       Getting started
     </a>
   </li>
@@ -412,49 +408,11 @@
           
           
 
-  
 
-
-  <li class="md-nav__item md-nav__item--active">
-    
-    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    
-      
-    
-    
-      <label class="md-nav__link md-nav__link--active" for="__toc">
-        Build phase
-      </label>
-    
-    <a href="./" title="Build phase" class="md-nav__link md-nav__link--active">
+  <li class="md-nav__item">
+    <a href="../../RDSFargateRound/build.md" title="Build phase" class="md-nav__link">
       Build phase
     </a>
-    
-      
-<nav class="md-nav md-nav--secondary">
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">Table of contents</label>
-    <ul class="md-nav__list" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#environment-setup" title="Environment setup" class="md-nav__link">
-    Environment setup
-  </a>
-  
-</li>
-      
-      
-      
-      
-      
-    </ul>
-  
-</nav>
-    
   </li>
 
         
@@ -464,7 +422,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../RDS/" title="RDS phase" class="md-nav__link">
+    <a href="../../RDSFargateRound/RDS.md" title="RDS phase" class="md-nav__link">
       RDS phase
     </a>
   </li>
@@ -476,7 +434,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../Fargate/" title="Fargate phase" class="md-nav__link">
+    <a href="../../RDSFargateRound/Fargate.md" title="Fargate phase" class="md-nav__link">
       Fargate phase
     </a>
   </li>
@@ -488,7 +446,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../cleanup/" title="Clean up phase" class="md-nav__link">
+    <a href="../../RDSFargateRound/cleanup.md" title="Clean up phase" class="md-nav__link">
       Clean up phase
     </a>
   </li>
@@ -544,8 +502,8 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#environment-setup" title="Environment setup" class="md-nav__link">
-    Environment setup
+  <a href="#accessing-aws-event-engine" title="Accessing AWS Event Engine" class="md-nav__link">
+    Accessing AWS Event Engine
   </a>
   
 </li>
@@ -566,11 +524,11 @@
             <article class="md-content__inner md-typeset">
               
                 
-                  <a href="https://github.com/aws-samples/aws-secretsmgr-workshop/edit/master/docs/RDSFargateRound/build.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
+                  <a href="https://github.com/aws-samples/aws-secretsmgr-workshop/edit/master/docs/RDSFargate/getting-started.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
                 
                 
-                <h1 id="rds-and-fargate-round-build-phase">RDS and Fargate Round - Build Phase</h1>
-<h2 id="environment-setup">Environment setup</h2>
+                <h1 id="rds-and-fargate-round-getting-started">RDS and Fargate Round - Getting Started</h1>
+<h2 id="accessing-aws-event-engine">Accessing AWS Event Engine</h2>
 <div class="admonition info">
 <p class="admonition-title">To get started at an <em>AWS event</em> where the <em>Event Engine</em> is being used</p>
 <p><em>The CloudFormation Stack for this event should already be deployed.</em></p>
@@ -580,76 +538,30 @@
 <li>Click <strong>AWS Console</strong>.</li>
 <li>Click <strong>Open Console</strong>.</li>
 <li>Make sure you are in the correct region.</li>
-<li>Click <strong><a href="../RDS/">here</a></strong> to proceed to the RDS Phase.</li>
+<li>Click <strong><a href="../RDS/">here</a></strong> to proceed to the RDS Phase of the workshop.</li>
 </ol>
 </div>
 <hr />
-<details class="info"><summary>Click here if you're <em>not at an AWS event</em> or are using your own account</summary><p>To setup the workshop environment, launch the CloudFormation stack below in the preferred AWS region using the "Deploy to AWS" links below. This will automatically take you to the console to run the template. In order to complete these workshops, you'll need a valid, usable <a href="https://aws.amazon.com/getting-started/" target="_blank">AWS Account</a>. Use a personal account or create a new AWS account to ensure you have the necessary access and that you do not accidentally modify corporate resources. Do <strong>not</strong> use an AWS account from the company you work for. <strong>We stronly recommend that you use a non-production AWS account for this workshop such as a training, sandbox or personal account. If multiple participants are sharing a single account you should use unique names for the stack set and resources created in the console.</strong></p>
-<hr />
-<p><strong>US East 1 (N. Virginia)</strong> &nbsp; &nbsp; &nbsp; &nbsp;
-<a href="https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=smdemo&templateURL=https://s3.amazonaws.com/sa-security-specialist-workshops-us-east-1/secrets-manager-workshop/RDSFargate.yml" target="_blank"><img alt="Deploy in us-east-1" src="../images/deploy-to-aws.png" /></a></p>
-<hr />
-<p><strong>US East 2 (Ohio)</strong> &nbsp; &nbsp; &nbsp; &nbsp;
-<a href="https://console.aws.amazon.com/cloudformation/home?region=us-east-2#/stacks/new?stackName=smdemo&templateURL=https://s3.amazonaws.com/sa-security-specialist-workshops-us-east-1/secrets-manager-workshop/RDSFargate.yml" target="_blank"><img alt="Deploy in us-east-2" src="../images/deploy-to-aws.png" /></a></p>
-<hr />
-<p><strong>US West 2 (Oregon)</strong> &nbsp; &nbsp; &nbsp; &nbsp;
-<a href="https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?stackName=smdemo&templateURL=https://s3.amazonaws.com/sa-security-specialist-workshops-us-east-1/secrets-manager-workshop/RDSFargate.yml" target="_blank"><img alt="Deploy in us-west-2" src="../images/deploy-to-aws.png" /></a></p>
-<hr />
+<details class="info"><summary>Click here if you're <em>not at an AWS event</em> or are using your own account</summary><p>In order to complete these workshops, you'll need a valid, usable <a href="https://aws.amazon.com/getting-started/" target="_blank">AWS Account</a>. Use a personal account or create a new AWS account to ensure you have the necessary access and that you do not accidentally modify corporate resources. Do <strong>not</strong> use an AWS account from the company you work for. <strong>We stronly recommend that you use a non-production AWS account for this workshop such as a training, sandbox or personal account. If multiple participants are sharing a single account you should use unique names for the stack set and resources created in the console.</strong></p>
+<p><strong>Create an admin user</strong></p>
+<p>If you don't already have an AWS IAM user with admin permissions, please use the following instructions to create one:</p>
 <ol>
-<li>
-<p>Click <strong><em>Next</em></strong> on the Specify Template section.</p>
-</li>
-<li>
-<p>On the Specify stack details step, update the following parameters depending on how you are doing this workshop:</p>
-<table>
-<thead>
-<tr>
-<th>Field name</th>
-<th>Field value</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Stack name</td>
-<td>You can choose or just use <strong>smdemo</strong></td>
-</tr>
-<tr>
-<td>Enter the name of the database</td>
-<td>Accept the default value of <strong>smdemo</strong></td>
-</tr>
-<tr>
-<td>Enter the TCP port for the database endpoint</td>
-<td>Accept the default value of <strong>3306</strong></td>
-</tr>
-<tr>
-<td>Enter a prefix for the Name tag</td>
-<td>Accept the default value of <strong>smdemo</strong></td>
-</tr>
-<tr>
-<td>Enter the value for the Project tag</td>
-<td>Accept the default value of <strong>smproj</strong></td>
-</tr>
-<tr>
-<td>Enter the SSM AMI Id Parameter</td>
-<td>Accept the default value - Do not change!</td>
-</tr>
-</tbody>
-</table>
-</li>
-<li>
-<p>Click <strong><em>Next</em></strong> </p>
-</li>
-<li>
-<p>Click Next on the <strong><em>Configure stack options</em></strong> section.</p>
-</li>
-<li>
-<p>Finally, acknowledge that the template will create IAM roles under Capabilities and click <strong>Create</strong>.</p>
-</li>
+<li>Browse to the <a href="https://console.aws.amazon.com/iam/" target="_blank">AWS IAM</a> console.</li>
+<li>Click <strong>Users</strong> on the left navigation and then click <strong>Add User</strong>.</li>
+<li>Enter a <strong>User Name</strong>, check the checkbox for <strong>AWS Management Console access</strong>, enter a <strong>Custom Password</strong>, and click <strong>Next:Permissions</strong>.</li>
+<li>Click <strong>Attach existing policies directly</strong>, click the checkbox next to the <strong>AdministratorAccess</strong>, and click <strong>Next:review</strong>.</li>
+<li>Click <strong>Create User</strong></li>
+<li>Click <strong>Dashboard</strong> on the left navigation and use the <strong>IAM users sign-in link</strong> to login as the admin user you just created.</li>
 </ol>
-<p>This will bring you back to the CloudFormation console. You can refresh the page to see the stack starting to create. Before moving on, make sure the stack is in a <strong>CREATE_COMPLETE</strong> status. This should take ~8 minutes.</p>
+<p><strong>Add credits (optional</strong>)</p>
+<p>If you are doing this workshop as part of an AWS sponsored event, you will receive credits to cover the costs.  Below are the instructions for entering the credits:</p>
+<ol>
+<li>Browse to the <a href="https://console.aws.amazon.com/billing/home?#/credits" target="_blank">AWS Account Settings</a> console.</li>
+<li>Enter the <strong>Promo Code</strong> you received (these will be handed out at the beginning of the workshop).</li>
+<li>Enter the <strong>Security Check</strong> and click <strong>Redeem</strong>.</li>
+</ol>
 </details>
-<hr />
-<p>You can now proceed to the <a href="../RDS/">RDS Phase</a>.</p>
+<p>You are now setup for the workshop!</p>
                 
                   
                 
@@ -666,41 +578,6 @@
       
         
 <footer class="md-footer">
-  
-    <div class="md-footer-nav">
-      <nav class="md-footer-nav__inner md-grid">
-        
-          <a href="../getting-started/" title="Getting started" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
-            <div class="md-flex__cell md-flex__cell--shrink">
-              <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
-            </div>
-            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
-              <span class="md-flex__ellipsis">
-                <span class="md-footer-nav__direction">
-                  Previous
-                </span>
-                Getting started
-              </span>
-            </div>
-          </a>
-        
-        
-          <a href="../RDS/" title="RDS phase" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
-            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
-              <span class="md-flex__ellipsis">
-                <span class="md-footer-nav__direction">
-                  Next
-                </span>
-                RDS phase
-              </span>
-            </div>
-            <div class="md-flex__cell md-flex__cell--shrink">
-              <i class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
-            </div>
-          </a>
-        
-      </nav>
-    </div>
   
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">

@@ -2,42 +2,42 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
      <loc>https://secrets-manager.awssecworkshops.com/</loc>
-     <lastmod>2019-10-06</lastmod>
+     <lastmod>2019-10-28</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>https://secrets-manager.awssecworkshops.com/RDSFargateRound/</loc>
-     <lastmod>2019-10-06</lastmod>
+     <loc></loc>
+     
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>https://secrets-manager.awssecworkshops.com/RDSFargateRound/getting-started/</loc>
-     <lastmod>2019-10-06</lastmod>
+     <loc></loc>
+     
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>https://secrets-manager.awssecworkshops.com/RDSFargateRound/build/</loc>
-     <lastmod>2019-10-06</lastmod>
+     <loc></loc>
+     
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>https://secrets-manager.awssecworkshops.com/RDSFargateRound/RDS/</loc>
-     <lastmod>2019-10-06</lastmod>
+     <loc></loc>
+     
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>https://secrets-manager.awssecworkshops.com/RDSFargateRound/Fargate/</loc>
-     <lastmod>2019-10-06</lastmod>
+     <loc></loc>
+     
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>https://secrets-manager.awssecworkshops.com/RDSFargateRound/cleanup/</loc>
-     <lastmod>2019-10-06</lastmod>
+     <loc></loc>
+     
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>https://secrets-manager.awssecworkshops.com/contribute/</loc>
-     <lastmod>2019-10-06</lastmod>
+     <lastmod>2019-10-28</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>

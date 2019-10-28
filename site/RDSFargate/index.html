@@ -10,10 +10,10 @@
       <meta name="viewport" content="width=device-width,initial-scale=1">
       <meta http-equiv="x-ua-compatible" content="ie=edge">
       
-        <meta name="description" content="A hands-on workshop to learn about using Secrets Manager.">
+        <meta name="description" content="A collection of hands-on Builder Sesssions to learn about using Secrets Manager.">
       
       
-        <link rel="canonical" href="https://secrets-manager.awssecworkshops.com/RDSFargateRound/getting-started/">
+        <link rel="canonical" href="https://secrets-manager.awssecworkshops.com/RDSFargate/">
       
       
         <meta name="author" content="aws-security-workshops@amazon.com">
@@ -37,21 +37,21 @@
       
         <meta name="lang:search.tokenizer" content="[\s\-]+">
       
-      <link rel="shortcut icon" href="../../assets/images/aws-favicon.ico">
+      <link rel="shortcut icon" href="../assets/images/aws-favicon.ico">
       <meta name="generator" content="mkdocs-1.0.4, mkdocs-material-4.0.1">
     
     
       
-        <title>Getting started - Secrets Manager Workshop</title>
+        <title>Secrets Manager Builder Sessions</title>
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/application.982221ab.css">
+      <link rel="stylesheet" href="../assets/stylesheets/application.982221ab.css">
       
       
     
     
-      <script src="../../assets/javascripts/modernizr.1f0bcf2b.js"></script>
+      <script src="../assets/javascripts/modernizr.1f0bcf2b.js"></script>
     
     
       
@@ -60,10 +60,10 @@
         <style>body,input{font-family:"Roboto","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono","Courier New",Courier,monospace}</style>
       
     
-    <link rel="stylesheet" href="../../assets/fonts/material-icons.css">
+    <link rel="stylesheet" href="../assets/fonts/material-icons.css">
     
     
-      <link rel="stylesheet" href="../../stylesheets/custom.css">
+      <link rel="stylesheet" href="../stylesheets/custom.css">
     
     
       
@@ -102,7 +102,7 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
     
-      <a href="#rds-and-fargate-round-getting-started" tabindex="1" class="md-skip">
+      <a href="#rds-and-fargate-builder-session-scenario" tabindex="1" class="md-skip">
         Skip to content
       </a>
     
@@ -139,7 +139,7 @@
               title="Amazon Web Services"
               class="md-header-nav__button md-logo">
             
-              <img src="../../assets/images/aws_smile_logo.png" width="40" height="24" />
+              <img src="../assets/images/aws_smile_logo.png" width="40" height="24" />
             
           </a>
         </div>
@@ -157,10 +157,10 @@
             
               
                 <span class="md-header-nav__topic">
-                  Secrets Manager Workshop
+                  Secrets Manager Builder Sessions
                 </span>
                 <span class="md-header-nav__topic">
-                  Getting started
+                  RDS and Fargate Builder Session - Scenario
                 </span>
               
             
@@ -248,16 +248,14 @@
       
         
 
-  
-
-<nav class="md-tabs md-tabs--active" data-md-component="tabs">
+<nav class="md-tabs" data-md-component="tabs">
   <div class="md-tabs__inner md-grid">
     <ul class="md-tabs__list">
       
         
   <li class="md-tabs__item">
     
-      <a href="../.." title="Overview" class="md-tabs__link">
+      <a href=".." title="Overview" class="md-tabs__link md-tabs__link--active">
         Overview
       </a>
     
@@ -269,7 +267,7 @@
   
     <li class="md-tabs__item">
       
-        <a href="../" title="RDS and Fargate" class="md-tabs__link md-tabs__link--active">
+        <a href="../RDSFargateRound/index.md" title="RDS and Fargate" class="md-tabs__link">
           RDS and Fargate
         </a>
       
@@ -317,9 +315,9 @@
   <!-- Site title -->
   <label class="md-nav__title md-nav__title--site" for="__drawer">
     <a href="https://secrets-manager.awssecworkshops.com/"
-        title="Secrets Manager Workshop" class="md-nav__button md-logo">
+        title="Secrets Manager Builder Sessions" class="md-nav__button md-logo">
       
-        <img src="../../assets/images/aws_smile_logo.png" width="48" height="48" />
+        <img src="../assets/images/aws_smile_logo.png" width="48" height="48" />
       
     </a>
     
@@ -357,7 +355,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../.." title="Overview" class="md-nav__link">
+    <a href=".." title="Overview" class="md-nav__link">
       Overview
     </a>
   </li>
@@ -367,12 +365,10 @@
       
       
 
-  
 
-
-  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+  <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2" checked>
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2">
     
     <label class="md-nav__link" for="nav-2">
       RDS and Fargate
@@ -390,7 +386,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../" title="Scenario" class="md-nav__link">
+    <a href="../RDSFargateRound/index.md" title="Scenario" class="md-nav__link">
       Scenario
     </a>
   </li>
@@ -400,49 +396,11 @@
           
           
 
-  
 
-
-  <li class="md-nav__item md-nav__item--active">
-    
-    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    
-      
-    
-    
-      <label class="md-nav__link md-nav__link--active" for="__toc">
-        Getting started
-      </label>
-    
-    <a href="./" title="Getting started" class="md-nav__link md-nav__link--active">
+  <li class="md-nav__item">
+    <a href="../RDSFargateRound/getting-started.md" title="Getting started" class="md-nav__link">
       Getting started
     </a>
-    
-      
-<nav class="md-nav md-nav--secondary">
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">Table of contents</label>
-    <ul class="md-nav__list" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#accessing-aws-event-engine" title="Accessing AWS Event Engine" class="md-nav__link">
-    Accessing AWS Event Engine
-  </a>
-  
-</li>
-      
-      
-      
-      
-      
-    </ul>
-  
-</nav>
-    
   </li>
 
         
@@ -452,7 +410,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../build/" title="Build phase" class="md-nav__link">
+    <a href="../RDSFargateRound/build.md" title="Build phase" class="md-nav__link">
       Build phase
     </a>
   </li>
@@ -464,7 +422,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../RDS/" title="RDS phase" class="md-nav__link">
+    <a href="../RDSFargateRound/RDS.md" title="RDS phase" class="md-nav__link">
       RDS phase
     </a>
   </li>
@@ -476,7 +434,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../Fargate/" title="Fargate phase" class="md-nav__link">
+    <a href="../RDSFargateRound/Fargate.md" title="Fargate phase" class="md-nav__link">
       Fargate phase
     </a>
   </li>
@@ -488,7 +446,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../cleanup/" title="Clean up phase" class="md-nav__link">
+    <a href="../RDSFargateRound/cleanup.md" title="Clean up phase" class="md-nav__link">
       Clean up phase
     </a>
   </li>
@@ -505,7 +463,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../contribute/" title="Contributing" class="md-nav__link">
+    <a href="../contribute/" title="Contributing" class="md-nav__link">
       Contributing
     </a>
   </li>
@@ -544,8 +502,8 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#accessing-aws-event-engine" title="Accessing AWS Event Engine" class="md-nav__link">
-    Accessing AWS Event Engine
+  <a href="#workshop-architecture" title="Workshop architecture" class="md-nav__link">
+    Workshop architecture
   </a>
   
 </li>
@@ -566,44 +524,33 @@
             <article class="md-content__inner md-typeset">
               
                 
-                  <a href="https://github.com/aws-samples/aws-secretsmgr-workshop/edit/master/docs/RDSFargateRound/getting-started.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
+                  <a href="https://github.com/aws-samples/aws-secretsmgr-workshop/edit/master/docs/RDSFargate/index.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
                 
                 
-                <h1 id="rds-and-fargate-round-getting-started">RDS and Fargate Round - Getting Started</h1>
-<h2 id="accessing-aws-event-engine">Accessing AWS Event Engine</h2>
+                <h1 id="rds-and-fargate-builder-session-scenario">RDS and Fargate Builder Session - Scenario</h1>
+<p>This Secrets Manager Builder Session guides you through the use of <strong><a href="https://aws.amazon.com/secrets-manager/" target="_blank">AWS Secrets Manager</a></strong> with <strong><a href="https://aws.amazon.com/rds/" target="_blank">Amazon RDS</a></strong> and <strong><a href="https://aws.amazon.com/fargate/" target="_blank">AWS Fargate</a></strong>.  In the first phase of the Builder Session, you will access the RDS data base with Secrets Manager.  You will then use Secrets Manager to rotate the data base password.  You will then use Secrets Manager to access the data base again to show that you can continue to access the data base after the rotation.</p>
+<p>In the second phase of the Builder Session, you will extend your use of Secrets Manager into an AWS Fargate container.  You will create an <strong><a href="https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definitions.html" target="_blank">Amazon ECS task definition</a></strong> to pass secrets to the Fargate container and then launch the Fargate container.  You will then ssh into the container to show that the secret was passed to the container and that you can access the RDS data base.</p>
+<ul>
+<li><strong>Level</strong>: 300</li>
+<li><strong>Duration</strong>: one hour</li>
+<li><strong><a href="https://awssecworkshops.com/getting-started/" target="_blank">Prerequisites</a></strong>:<ul>
+<li>AWS Account, Admin IAM User</li>
+<li>Working knowledge of <strong><a href="https://aws.amazon.com/amazon-linux-2/" target="_blank">Amazon Linux 2</a></strong></li>
+<li>Working knowledge of both Docker and AWS Fargate</li>
+<li>An ssh client for your workstation and the ability to initiate outbound ssh connections</li>
+</ul>
+</li>
+<li><strong><a href="https://www.nist.gov/cyberframework/online-learning/components-framework" target="_blank">CSF Functions</a></strong>: Prevent</li>
+<li><strong><a href="https://d0.awsstatic.com/whitepapers/AWS_CAF_Security_Perspective.pdf" target="_blank">CAF Components</a></strong>: Preventative</li>
+<li><strong>AWS Services</strong>: <strong><a href="https://aws.amazon.com/secrets-manager/" target="_blank">AWS Secrets Manager</a></strong>, <strong><a href="https://aws.amazon.com/rds/" target="_blank">Amazon RDS</a></strong>, <strong><a href="https://aws.amazon.com/fargate/" target="_blank">AWS Fargate</a></strong></li>
+</ul>
 <div class="admonition info">
-<p class="admonition-title">To get started at an <em>AWS event</em> where the <em>Event Engine</em> is being used</p>
-<p><em>The CloudFormation Stack for this event should already be deployed.</em></p>
-<ol>
-<li>Click <a href="https://dashboard.eventengine.run" target="_blank">here</a> to open the Event Engine dashboard in a separate browser tab.</li>
-<li>Enter the <strong>team hash</strong> code that you were provided and click <strong>Proceed</strong>.. </li>
-<li>Click <strong>AWS Console</strong>.</li>
-<li>Click <strong>Open Console</strong>.</li>
-<li>Make sure you are in the correct region.</li>
-<li>Click <strong><a href="../RDS/">here</a></strong> to proceed to the RDS Phase of the workshop.</li>
-</ol>
+<p class="admonition-title">Before you Begin</p>
+<p><strong>Please review the architecture diagram below.</strong></p>
 </div>
-<hr />
-<details class="info"><summary>Click here if you're <em>not at an AWS event</em> or are using your own account</summary><p>In order to complete these workshops, you'll need a valid, usable <a href="https://aws.amazon.com/getting-started/" target="_blank">AWS Account</a>. Use a personal account or create a new AWS account to ensure you have the necessary access and that you do not accidentally modify corporate resources. Do <strong>not</strong> use an AWS account from the company you work for. <strong>We stronly recommend that you use a non-production AWS account for this workshop such as a training, sandbox or personal account. If multiple participants are sharing a single account you should use unique names for the stack set and resources created in the console.</strong></p>
-<p><strong>Create an admin user</strong></p>
-<p>If you don't already have an AWS IAM user with admin permissions, please use the following instructions to create one:</p>
-<ol>
-<li>Browse to the <a href="https://console.aws.amazon.com/iam/" target="_blank">AWS IAM</a> console.</li>
-<li>Click <strong>Users</strong> on the left navigation and then click <strong>Add User</strong>.</li>
-<li>Enter a <strong>User Name</strong>, check the checkbox for <strong>AWS Management Console access</strong>, enter a <strong>Custom Password</strong>, and click <strong>Next:Permissions</strong>.</li>
-<li>Click <strong>Attach existing policies directly</strong>, click the checkbox next to the <strong>AdministratorAccess</strong>, and click <strong>Next:review</strong>.</li>
-<li>Click <strong>Create User</strong></li>
-<li>Click <strong>Dashboard</strong> on the left navigation and use the <strong>IAM users sign-in link</strong> to login as the admin user you just created.</li>
-</ol>
-<p><strong>Add credits (optional</strong>)</p>
-<p>If you are doing this workshop as part of an AWS sponsored event, you will receive credits to cover the costs.  Below are the instructions for entering the credits:</p>
-<ol>
-<li>Browse to the <a href="https://console.aws.amazon.com/billing/home?#/credits" target="_blank">AWS Account Settings</a> console.</li>
-<li>Enter the <strong>Promo Code</strong> you received (these will be handed out at the beginning of the workshop).</li>
-<li>Enter the <strong>Security Check</strong> and click <strong>Redeem</strong>.</li>
-</ol>
-</details>
-<p>You are now setup for the workshop!</p>
+<h2 id="workshop-architecture">Workshop architecture</h2>
+<p><img alt="Workshop Architecture" src="images/RDSFargateArch.png" /></p>
+<p>This environment consists of a VPC with two subnets.  The subnets containts an Amazon EC2 bastion host running Amazon Linux 2 used for running AWS CLI commands and a private, not publicly-accessible, Amazon RDS MySQL database instance.  The subnets are chosen based on the availability of an interface VPC endpoint for AWS Secrets Manager.  The VPC also contains an AWS Fargate container running the Amazon Linux 2 operating system.  In the RDS and Fargate phases of the workshop, you will learn how to use AWS Secrets Manager to access the RDS database from both a standard EC2 instance and the Fargate container.</p>
                 
                   
                 
@@ -621,41 +568,6 @@
         
 <footer class="md-footer">
   
-    <div class="md-footer-nav">
-      <nav class="md-footer-nav__inner md-grid">
-        
-          <a href="../" title="Scenario" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
-            <div class="md-flex__cell md-flex__cell--shrink">
-              <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
-            </div>
-            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
-              <span class="md-flex__ellipsis">
-                <span class="md-footer-nav__direction">
-                  Previous
-                </span>
-                Scenario
-              </span>
-            </div>
-          </a>
-        
-        
-          <a href="../build/" title="Build phase" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
-            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
-              <span class="md-flex__ellipsis">
-                <span class="md-footer-nav__direction">
-                  Next
-                </span>
-                Build phase
-              </span>
-            </div>
-            <div class="md-flex__cell md-flex__cell--shrink">
-              <i class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
-            </div>
-          </a>
-        
-      </nav>
-    </div>
-  
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
       <div class="md-footer-copyright">
@@ -672,7 +584,7 @@
       </div>
       
   <div class="md-footer-social">
-    <link rel="stylesheet" href="../../assets/fonts/font-awesome.css">
+    <link rel="stylesheet" href="../assets/fonts/font-awesome.css">
     
       <a href="https://awssecworkshops.com" class="md-footer-social__link fa fa-home"></a>
     
@@ -690,9 +602,9 @@
       
     </div>
     
-      <script src="../../assets/javascripts/application.b806dc00.js"></script>
+      <script src="../assets/javascripts/application.b806dc00.js"></script>
       
-      <script>app.initialize({version:"1.0.4",url:{base:"../.."}})</script>
+      <script>app.initialize({version:"1.0.4",url:{base:".."}})</script>
       
     
   </body>

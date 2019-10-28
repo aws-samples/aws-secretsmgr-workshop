@@ -45,11 +45,11 @@ markdown_extensions:
 nav:
   - Overview: 'index.md'
   - 'RDS and Fargate':
-    - 'Scenario': 'RDSFargateRound/index.md'
-    - 'Getting started': 'RDSFargateRound/getting-started.md'
-    - 'Build phase': 'RDSFargateRound/build.md'
-    - 'RDS phase': 'RDSFargateRound/RDS.md'
-    - 'Fargate phase': 'RDSFargateRound/Fargate.md'
-    - 'Clean up phase': 'RDSFargateRound/cleanup.md'
+    - 'Scenario': 'RDSFargate/index.md'
+    - 'Getting started': 'RDSFargate/getting-started.md'
+    - 'Build phase': 'RDSFargate/build.md'
+    - 'RDS phase': 'RDSFargate/RDS.md'
+    - 'Fargate phase': 'RDSFargate/Fargate.md'
+    - 'Clean up phase': 'RDSFargate/cleanup.md'
   - 'Contributing': 'contribute.md'
   - 'License': 'https://github.com/aws-samples/aws-secretsmgr-workshop/blob/master/LICENSE'
