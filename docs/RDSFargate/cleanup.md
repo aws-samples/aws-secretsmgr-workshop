@@ -2,8 +2,6 @@
 
 ## Fargate-specific clean up
 
-If you did the Fargate phase of this workshop round, then do the steps in this section.  Otherwise, skip to the General clean up section below.
-
 1. If you are do not have a session open to the bastion host, then connect to the bastion host using AWS Systems Manager Session Manager.  To do this:
 
     1. Go to the Systems Manager console.

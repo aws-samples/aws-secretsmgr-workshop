@@ -18,18 +18,18 @@
 
 ## Overview
 
-In this phase, you will learn how to use AWS Secrets Manager for rotating the password for a private Amazon RDS database. As a reminder, the environment provisioned by CloudFormation is shown in the figure below.   You will not be working with the AWS Fargate container in this phase.
+In this phase, you will learn how to use AWS Secrets Manager for rotating the password for a private Amazon RDS database. As a reminder, the environment provisioned by CloudFormation is shown in the figure below.   You will not be working with the AWS Fargate container in this phase so it is not shown below.
 
-![Workshop Architecture](images/RDSFargateArch.png)
+![Workshop Architecture](images/RDSPhase.png)
 
-| **Security Note** | 
+| **Important** | 
 | ---------- | 
-| |
-|**_For the sake of simplicity, this tutorial uses jq to parse the secret value into environment variables to allow for easy command line manipulation. This is NOT a security best practice for a production environment. In a production environment, we recommend that you don't store passwords in environment variables._**|
+| For the sake of simplicity, this tutorial uses jq to parse the secret value into environment variables to allow for easy command line manipulation. This is NOT a security best practice for a production environment. In a production environment, we recommend that you don't store passwords in environment variables.  Click **<a href="https://docs.aws.amazon.com/secretsmanager/latest/userguide/best-practices.html" target="_blank">here</a>** to read about the best practices for using Secrets Manager. |
 
 ## View the CloudFormation stack
 
-1. Go to the CloudFormation console and identify the stack that you built.  The list of stacks will look similar to the figure below.  The appearance may vary based on the version of the console you are using.  The red arrow points to a link with the name of the CloudFormation stack.
+1. Go to the **<a href="https://console.aws.amazon.com/cloudformation" target="_blank">CloudFormation console</a>** and identify the stack that you built.  Make sure you are in the correct region.  The list of stacks will look similar to the figure below.  The appearance may vary based on the version of the console you are using.  The red arrow points to a link with the name of the CloudFormation stack.
+
 
     ![Stack List](images/RDSFargateStackList.png)
 
@@ -59,53 +59,58 @@ In this phase, you will learn how to use AWS Secrets Manager for rotating the pa
 
 In this section, you will store the RDS database credentials in AWS Secrets Manager.
 
-1. Open the [AWS Secrets Manager Console](https://console.aws.amazon.com/secretsmanager/home) in a new tab or window.
+1. Go to the **<a href="https://console.aws.amazon.com/secretsmanager" target="_blank">Secrets Manager console</a>**.
 
 2. Click **Store a new secret**.
 
 3. Select the **Credentials for RDS database** radio button.
 
-4. Copy the values for the DBUser and DBPassword CloudFormation output values that you got from the CloudFormation stack into the **User name** and **Password** fields respectively.   Scroll down to the bottom of the page and you will see a list of your RDS instances.  Select the RDS instance based on the DBInstance CloudFormation output value.
+4. Copy the values for the DBUser and DBPassword CloudFormation output values that you got from the CloudFormation stack into the **User name** and **Password** fields respectively.
+
+5. For the encryption key, Secrets Manager gives you the option of using the default KMS key that Secrets Manager creates for your account.  This default key is managed by Secrets Manager itself.  It provides encryption but you do not have the ability manage the policies or grants for the key.  You can also specify your own KMS key which gives you more the option of configuring grants and policies that provide more granular permissions.
+
+    In a production environment that requires fine-grained security controls, you would likely choose your own key.  For this workshop we do not require these additional controls so select **DefaultEncryptionKey** in the dropdown menu.
+
+6. Scroll down to the bottom of the page and you will see a list of your RDS instances.  Select the RDS instance based on the DBInstance CloudFormation output value.
 
     ![AWS Secrets Manager store secret part 1](images/RDSSMStore1.png)
 
-5. Click **Next**.
+7. Click **Next**.
 
-6. Enter a name for the secret.  You can pick a name or just use **smdemo** as shown below.  Note that this must bot be the name of a secret that is pending deletion.
+8. Enter a name for the secret.  You can pick a name or just use **smdemo** as shown below.  Note that this must bot be the name of a secret that is pending deletion.
 
     ![AWS Secrets Manager store secret part 2](images/RDSSMStore2.png)
 
-7. Click **Next**.
+9. Click **Next**.
 
-8. Select **Disable automatic rotation** and then click **Next**.   We will enable rotation later in this module.
+10. Select **Disable automatic rotation** and then click **Next**.   We will enable rotation later in this module.
 
     ![AWS Secrets Manager store secret part 3](images/RDSSMStore3.png)
 
-9. Click **Store**.
+11. Click **Store**.
 
     You have now stored your secret value as shown below.
 
     ![AWS Secrets Manager store secret part 4](images/RDSSMStore4.png)
 
-## Access the database before the rotation
+## Access the database
 
 In this section, you will connect to the bastion host so you can run scripts that the CloudFormation template has created on the instance.  Complete all the steps below unless they are marked "optional."
 
 1. Connect to the bastion host using AWS Systems Manager Session Manager.  To do this:
 
-    1. Go to the Systems Manager console.
-    2. Select **Session Manager**.
-    3. Click **Start session**.
-    4. Select the radio button for the instance associated with the bastion host.
-    5. Click **Start session**.
+    1. Go to the **<a href="https://console.aws.amazon.com/systems-manager/session-manager" target="_blank">Session Manager console</a>**.
+    2. Click **Start session**.
+    3. Select the radio button for the instance associated with the bastion host.
+    4. Click **Start session**.
 
 2. The scripts you will be using are owned by the ec2-user account.  Enter the command below to change your effective user id and directory to those of ec2-user:
 
-    **sudo su - ec2-user**
+        sudo su - ec2-user
 
 4. Display the current directory using this command:
 
-    **ls**
+        ls
 
     You will see two shell scripts.
 
@@ -115,7 +120,7 @@ In this section, you will connect to the bastion host so you can run scripts tha
   
 5. View the file mysql.oldway.sh using this command:
 
-    **cat mysql.oldway.sh**
+        cat mysql.oldway.sh
 
     You will see contents similar to the lines below.  The values PASSWORD, USER, and ENDPOINT represent the hard-coded database password, username, and host endpoint.
 
@@ -148,26 +153,32 @@ In this section, you will connect to the bastion host so you can run scripts tha
 
 7. View the file mysql.newway.sh by entering this command:
 
-    **cat mysql.newway.sh**
+        cat mysql.newway.sh
 
-    As mentioned above, for the sake of simplicity, the scripts used in the tutorial use *jq* to parse the secret value into shell variables to allow for easy command line manipulation. This is NOT a security best practice for a production environment. In a production environment, we recommend that you don't store passwords in environment variables, and work with them in plaintext at the command line.
+    Take a look at the line below.
 
-        #/bin/bash
-        
-        # This is the new way of accessing a database, with AWS Secrets Manager.
-        
-        if [ $# -ne 1 ]
-        then
-          echo usage: $0 SecretName
-          exit 1
-        fi
-        
         secret=$(aws secretsmanager get-secret-value --secret-id $1 --region us-east-1 | jq .SecretString | jq fromjson)
+
+    The above line uses the AWS CLI to retrieve the secret whose name is passed as a command line argument ($1). The result is a JSON string so the *jq* utility is used to extract the actual value of the secret whose JSON key is named *SecretString*.  Here is an example of what a *SecretString* looks like:
+
+        {
+          "engine": "mysql",
+          "username": "myuser",
+          "password": "mypassword",
+          "host": "my-database-endpoint.us-east-1.rds.amazonaws.com",
+          "dbname": "myDatabase",
+          "port": "3306"
+        }
+
+    Note that the *SecretString* itself is a JSON structure.  Now look at the following lines.
+
         user=$(echo $secret | jq -r .username)
         password=$(echo $secret | jq -r .password)
         endpoint=$(echo $secret | jq -r .host)
         port=$(echo $secret | jq -r .port)
         
+    The four lines above show how to use *jq* to extract the database username, password, endpoint, and port from the *SecretString*.  These are then passed to the *mysql* command as shown on the lines below.  Note that there is no space after the -p option.
+
         mysql \
         -p$password \
         -u $user \
@@ -190,7 +201,7 @@ In this section, you will connect to the bastion host so you can run scripts tha
 
 In this section, you will enable the rotation of the secret you created in AWS Secrets Manager.
 
-1. Go to the main screen of the AWS Secrets Manager console.
+1. Go to the **<a href="https://console.aws.amazon.com/secretsmanager" target="_blank">Secrets Manager console</a>**.
 
 2. Click on the secret that you previously created.
 
@@ -210,16 +221,24 @@ In this section, you will enable the rotation of the secret you created in AWS S
 
 6. Click **Retrieve secret value** to see the new password value.
 
-## Access the database after the rotation
+## Access the database
 
 Let's try to connect to the database again, both the "old" way with a hard-coded password, the "new" way with AWS Secrets Manager.
 
-1. On the bastion host, use the **mysql.oldway.sh** script again as you did before the rotation.  You should receive an error message (access denied) because the mysql.oldway.sh script has the same hard-coded password.
+1. On the bastion host, run the command below to access the database using the hard-coded password.
+
+        ./mysql.oldway.sh
+
+    You should receive an error message (access denied) because the mysql.oldway.sh script has the same hard-coded password.
 
     ![AWS Secrets Manager old way after rotation](images/RDSMSQLoldpost.png)
 
-2. Use the **mysql.newway.sh** script followed by the name of the secret as you did before the rotation.   You should be able to connect to the database just as you did before since this script uses AWS Secrets Manager to fetch the updated credentials.
+2. Run the commands below to access the database with Secrets Manager by running the commands below.  **Note that you must specify the name of the secret!** In this example, the secret's name is *smdemo*.  You should be able to access the database as you did before because Secrets Manager fetches the new credential rather than using a hard-coded credential.
 
-## Conclusion
+        ./mysql.newway.sh smdemo
+        use smdemo;
+        show tables;
+        select * from bookinfo;
+        quit;
 
-You have completed ths RDS phase and have learned how to use AWS Secrets Manager with Amazon RDS.  If you wish, you can now continue to the Fargate phase.  If you do not want to do the Fargate phase, click **[here](../cleanup/)** to proceed to the Clean up phase.
+You have completed ths RDS phase and have learned how to use AWS Secrets Manager with Amazon RDS.  You will now continue to the Fargate phase. 
