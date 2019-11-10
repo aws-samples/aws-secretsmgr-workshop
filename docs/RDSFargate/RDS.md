@@ -207,11 +207,25 @@ In this section, you will enable the rotation of the secret you created in AWS S
 
 3. Click **Edit rotation**.
 
-4. Select **Enable automatic rotation**. Choose **30 days** for the rotation interval.  Click **Use this secret** because we will be using the credentials of this secret to access the database and then rotate the same credentials.  Click **Save** to begin the process.
+4. Select **Enable automatic rotation**.
+
+5. Choose **30 days** for the rotation interval.  
+
+6. Select the **Create a new Lambda function to perform rotation** radio button.  This will cause Secrets Manager to build a rotation function using the AWS-provided functions for standard databases.   If you had customized your own rotation function or if you were using a credential for a special application, you would select that here.
+
+7. Enter a name for the rotation function.   In the figure below, we used **smdemo** but you can select whatever you wish.
+
+8. You now need to select the secret whose permissions will be used to rotate the secret.  For this Builder Session, select **Use this secret.**  This will tell the rotation function to access the RDS database using the secret and rotate *the same secret*.
+
+    If your application supports two classes of users, for example a "superuser" and a "normal privilege" user, you could select **Use a secret that I have previously stored in Secrets Manager** and use the "superuser" credential to rotate the credential for the "normal privilege" user.
+
+    Your window should look similar to the figure below.
 
     ![AWS Secrets Manager rotation part 1](images/RDSRotate1.png)
 
-5. You will see a message telling you that the rotation is beginning and that you should remain on the page until it is complete. AWS Secrets Manager is now using the [AWS Serverless Application Repository](https://aws.amazon.com/serverless/serverlessrepo/) to install an [AWS Lambda rotation](https://aws.amazon.com/lambda/) function on your behalf.  **Do not leave this page until the rotation is complete.**
+9. Click **Save**.
+
+10. You will see a message telling you that the rotation is beginning and that you should remain on the page until it is complete. AWS Secrets Manager is now using the [AWS Serverless Application Repository](https://aws.amazon.com/serverless/serverlessrepo/) to install an [AWS Lambda rotation](https://aws.amazon.com/lambda/) function on your behalf.  **Do not leave this page until the rotation is complete.**
 
     ![AWS Secrets Manager rotation part 2](images/RDSRotate2.png)
 
@@ -219,7 +233,7 @@ In this section, you will enable the rotation of the secret you created in AWS S
 
     ![AWS Secrets Manager rotation part 3](images/RDSRotate3.png)
 
-6. Click **Retrieve secret value** to see the new password value.
+11. Click **Retrieve secret value** to see the new password value.
 
 ## Access the database
 
