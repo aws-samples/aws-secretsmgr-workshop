@@ -18,7 +18,7 @@
 
 ## Prerequisites
 
-1. You must complete the RDS phase of this workshop round before starting this phase.
+1. You must complete the RDS phase of this builder session before starting this phase.
 
 2. You should be familiar with Docker concepts.
 
@@ -36,8 +36,8 @@ Lastly as a reminder, the environment provisioned by CloudFormation is shown in 
 
 1. If you are do not have a session open to the bastion host, then connect to the bastion host using AWS Systems Manager Session Manager.  To do this:
 
-    1. Go to the Systems Manager console.
-    2. Select **Session Manager**.
+    1. Go to the **<a href="https://console.aws.amazon.com/systems-manager" target="_blank">Systems Manager console</a>**.
+    2. Click **Session Manager**.
     3. Click **Start session**.
     4. Select the radio button for the instance associated with the bastion host.
     5. Click **Start session**.

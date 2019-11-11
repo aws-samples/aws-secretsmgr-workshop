@@ -865,12 +865,16 @@ quit;
 </pre></div>
 
 
-<p>Take a look at the line below.</p>
-<div class="codehilite"><pre><span></span>secret=$(aws secretsmanager get-secret-value --secret-id $1 --region us-east-1 | jq .SecretString | jq fromjson)
+<p>Take a look at the lines below.</p>
+<div class="codehilite"><pre><span></span>getsecretvalue() {
+  aws secretsmanager get-secret-value --secret-id $1 | \
+    jq .SecretString | \
+    jq fromjson
+}
 </pre></div>
 
 
-<p>The above line uses the AWS CLI to retrieve the secret whose name is passed as a command line argument ($1). The result is a JSON string so the <em>jq</em> utility is used to extract the actual value of the secret whose JSON key is named <em>SecretString</em>.  Here is an example of what a <em>SecretString</em> looks like:</p>
+<p>The above lines define a shell function that uses the AWS CLI to retrieve the secret whose name is passed as a command line argument ($1). The result is a JSON string so the <em>jq</em> utility is used to extract the actual value of the secret whose JSON key is named <em>SecretString</em>.  Here is an example of what a <em>SecretString</em> looks like:</p>
 <div class="codehilite"><pre><span></span>{
   &quot;engine&quot;: &quot;mysql&quot;,
   &quot;username&quot;: &quot;myuser&quot;,
@@ -883,14 +887,15 @@ quit;
 
 
 <p>Note that the <em>SecretString</em> itself is a JSON structure.  Now look at the following lines.</p>
-<div class="codehilite"><pre><span></span>user=$(echo $secret | jq -r .username)
+<div class="codehilite"><pre><span></span>secret=`getsecretvalue $1`
+user=$(echo $secret | jq -r .username)
 password=$(echo $secret | jq -r .password)
 endpoint=$(echo $secret | jq -r .host)
 port=$(echo $secret | jq -r .port)
 </pre></div>
 
 
-<p>The four lines above show how to use <em>jq</em> to extract the database username, password, endpoint, and port from the <em>SecretString</em>.  These are then passed to the <em>mysql</em> command as shown on the lines below.  Note that there is no space after the -p option.</p>
+<p>These lines call the shell function and then use <em>jq</em> to extract the database username, password, endpoint, and port from the <em>SecretString</em>.  These are then passed to the <em>mysql</em> command as shown on the lines below.  Note that there is no space after the -p option.</p>
 <div class="codehilite"><pre><span></span>mysql \
 -p$password \
 -u $user \
