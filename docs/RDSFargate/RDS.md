@@ -147,6 +147,7 @@ In this section, you will connect to the bastion host so you can run scripts tha
         show tables;
         select * from bookinfo;
         quit;
+        
 
     You can see an example of the output below.  This shows that you can access the database, the "old" way, with a hard-coded user name and password. You may be wondering why MariaDB appears in the image below.  Amazon Linux 2 includes the MariaDB port of the **mysql** command as an "extras" module.  The **mysql** program is compatible with both MySQL and MariaDB.
 

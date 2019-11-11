@@ -856,10 +856,8 @@
 </li>
 </ol>
 <h2 id="examine-the-flow-of-the-secret">Examine the flow of the secret</h2>
-<ol>
-<li>
 <p>Now that you have been able to access the database through Fargate, it's important to understand how the value made its way from the Task Definition to the mysql.newway.sh script.  It's important to understand that there may be multiple ways to accomplish this depending on what is running in the container.  Since this container is running a Linux shell, the path the secret value flowed took advantage of the capabilities of the shell.</p>
-</li>
+<ol>
 <li>
 <p>In the task definition JSON that you modified above, you modified the value of the <em>valueFrom</em> key to be the ARN of the secret that you stored in Secrets Manager.   The corresponding name key has as its value the name of an environment variable that will be presented to the Fargate task container when it is instantiated.</p>
 </li>
