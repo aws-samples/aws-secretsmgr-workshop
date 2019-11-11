@@ -926,8 +926,25 @@ quit;
 <p>Click <strong>Edit rotation</strong>.</p>
 </li>
 <li>
-<p>Select <strong>Enable automatic rotation</strong>. Choose <strong>30 days</strong> for the rotation interval.  Click <strong>Use this secret</strong> because we will be using the credentials of this secret to access the database and then rotate the same credentials.  Click <strong>Save</strong> to begin the process.</p>
+<p>Select <strong>Enable automatic rotation</strong>.</p>
+</li>
+<li>
+<p>Choose <strong>30 days</strong> for the rotation interval.  </p>
+</li>
+<li>
+<p>Select the <strong>Create a new Lambda function to perform rotation</strong> radio button.  This will cause Secrets Manager to build a rotation function using the AWS-provided functions for standard databases.   If you had customized your own rotation function or if you were using a credential for a special application, you would select that here.</p>
+</li>
+<li>
+<p>Enter a name for the rotation function.   In the figure below, we used <strong>smdemo</strong> but you can select whatever you wish.</p>
+</li>
+<li>
+<p>You now need to select the secret whose permissions will be used to rotate the secret.  For this Builder Session, select <strong>Use this secret.</strong>  This will tell the rotation function to access the RDS database using the secret and rotate <em>the same secret</em>.</p>
+<p>If your application supports two classes of users, for example a "superuser" and a "normal privilege" user, you could select <strong>Use a secret that I have previously stored in Secrets Manager</strong> and use the "superuser" credential to rotate the credential for the "normal privilege" user.</p>
+<p>Your window should look similar to the figure below.</p>
 <p><img alt="AWS Secrets Manager rotation part 1" src="../images/RDSRotate1.png" /></p>
+</li>
+<li>
+<p>Click <strong>Save</strong>.</p>
 </li>
 <li>
 <p>You will see a message telling you that the rotation is beginning and that you should remain on the page until it is complete. AWS Secrets Manager is now using the <a href="https://aws.amazon.com/serverless/serverlessrepo/">AWS Serverless Application Repository</a> to install an <a href="https://aws.amazon.com/lambda/">AWS Lambda rotation</a> function on your behalf.  <strong>Do not leave this page until the rotation is complete.</strong></p>

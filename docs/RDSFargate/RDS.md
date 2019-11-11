@@ -99,10 +99,11 @@ In this section, you will connect to the bastion host so you can run scripts tha
 
 1. Connect to the bastion host using AWS Systems Manager Session Manager.  To do this:
 
-    1. Go to the **<a href="https://console.aws.amazon.com/systems-manager/session-manager" target="_blank">Session Manager console</a>**.
-    2. Click **Start session**.
-    3. Select the radio button for the instance associated with the bastion host.
-    4. Click **Start session**.
+    1. Go to the **<a href="https://console.aws.amazon.com/systems-manager" target="_blank">Systems Manager console</a>**.
+    2. Click **Session Manager**.
+    3. Click **Start session**.
+    4. Select the radio button for the instance associated with the bastion host.
+    5. Click **Start session**.
 
 2. The scripts you will be using are owned by the ec2-user account.  Enter the command below to change your effective user id and directory to those of ec2-user:
 

@@ -139,11 +139,11 @@ Now that you have connected to the AWS Fargate container, you can now access the
 
 ## Examine the flow of the secret
 
-1. Now that you have been able to access the database through Fargate, it's important to understand how the value made its way from the Task Definition to the mysql.newway.sh script.  It's important to understand that there may be multiple ways to accomplish this depending on what is running in the container.  Since this container is running a Linux shell, the path the secret value flowed took advantage of the capabilities of the shell.
+Now that you have been able to access the database through Fargate, it's important to understand how the value made its way from the Task Definition to the mysql.newway.sh script.  It's important to understand that there may be multiple ways to accomplish this depending on what is running in the container.  Since this container is running a Linux shell, the path the secret value flowed took advantage of the capabilities of the shell.
 
-2. In the task definition JSON that you modified above, you modified the value of the *valueFrom* key to be the ARN of the secret that you stored in Secrets Manager.   The corresponding name key has as its value the name of an environment variable that will be presented to the Fargate task container when it is instantiated.
+1. In the task definition JSON that you modified above, you modified the value of the *valueFrom* key to be the ARN of the secret that you stored in Secrets Manager.   The corresponding name key has as its value the name of an environment variable that will be presented to the Fargate task container when it is instantiated.
 
-3. The Dockerfile that is used to build the Docker image for Fargate has the following as its last line:
+2. The Dockerfile that is used to build the Docker image for Fargate has the following as its last line:
 
     CMD /home/ec2-user/startprocesses.sh
 
@@ -162,7 +162,7 @@ Now that you have connected to the AWS Fargate container, you can now access the
 
     You can see that the startprocesses.sh script creates another script named /etc/profile.d/ecs.sh.  Each line in ecs.sh contains the definitions of every environment variable passed to the container whose environment variable names start with *TASKDEF_*.  Since the file exists in the /etc/profile.d directory, each time a user logs in, the ecs.sh file willl be "sourced" by the shell causing the environment variables to be set for the logged in user.
 
-4.  To confirm that the secret value has been passed, enter the following command from the Fargate container shell prompt:
+3.  To confirm that the secret value has been passed, enter the following command from the Fargate container shell prompt:
 
         env|grep TASKDEF_SECRET
 
