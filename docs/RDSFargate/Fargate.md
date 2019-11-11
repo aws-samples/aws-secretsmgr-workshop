@@ -70,7 +70,7 @@ You have now built the Docker image and pushed it to Amazon ECR.  You will now c
 
 You will now configure the Amazon Elastic Container Service Task Definition that AWS Fargate will use to launch the task.  After you confgure the task definition, you will launch the AWS Fargate task.
 
-1. Go to the ECS Console window and select the **Clusters** menu item.  You should see a cluster whose name begins with the stack name you chose and contains the string *-ECSCluster-*.  The cluster description should look similar to that shown in the figure below.
+1. Go to the **<a href="https://console.aws.amazon.com/ecs" target="_blank">ECS console</a>** and select the **Clusters** menu item.  You should see a cluster whose name begins with the stack name you chose and contains the string *-ECSCluster-*.  The cluster description should look similar to that shown in the figure below.
 
     ![ECS Cluster](images/ECSClusterList.png)
 
