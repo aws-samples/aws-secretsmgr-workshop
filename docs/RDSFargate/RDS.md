@@ -157,11 +157,15 @@ In this section, you will connect to the bastion host so you can run scripts tha
 
         cat mysql.newway.sh
 
-    Take a look at the line below.
+    Take a look at the lines below.
 
-        secret=$(aws secretsmanager get-secret-value --secret-id $1 --region us-east-1 | jq .SecretString | jq fromjson)
+        getsecretvalue() {
+          aws secretsmanager get-secret-value --secret-id $1 | \
+            jq .SecretString | \
+            jq fromjson
+        }
 
-    The above line uses the AWS CLI to retrieve the secret whose name is passed as a command line argument ($1). The result is a JSON string so the *jq* utility is used to extract the actual value of the secret whose JSON key is named *SecretString*.  Here is an example of what a *SecretString* looks like:
+    The above lines define a shell function that uses the AWS CLI to retrieve the secret whose name is passed as a command line argument ($1). The result is a JSON string so the *jq* utility is used to extract the actual value of the secret whose JSON key is named *SecretString*.  Here is an example of what a *SecretString* looks like:
 
         {
           "engine": "mysql",
@@ -174,12 +178,13 @@ In this section, you will connect to the bastion host so you can run scripts tha
 
     Note that the *SecretString* itself is a JSON structure.  Now look at the following lines.
 
+        secret=`getsecretvalue $1`
         user=$(echo $secret | jq -r .username)
         password=$(echo $secret | jq -r .password)
         endpoint=$(echo $secret | jq -r .host)
         port=$(echo $secret | jq -r .port)
         
-    The four lines above show how to use *jq* to extract the database username, password, endpoint, and port from the *SecretString*.  These are then passed to the *mysql* command as shown on the lines below.  Note that there is no space after the -p option.
+    These lines call the shell function and then use *jq* to extract the database username, password, endpoint, and port from the *SecretString*.  These are then passed to the *mysql* command as shown on the lines below.  Note that there is no space after the -p option.
 
         mysql \
         -p$password \
