@@ -46,7 +46,6 @@ nav:
   - Overview: 'index.md'
   - 'RDS and Fargate':
     - 'Scenario': 'RDSFargate/index.md'
-    - 'Getting started': 'RDSFargate/getting-started.md'
     - 'Build phase': 'RDSFargate/build.md'
     - 'RDS phase': 'RDSFargate/RDS.md'
     - 'Fargate phase': 'RDSFargate/Fargate.md'
