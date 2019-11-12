@@ -14,11 +14,11 @@
 <!-- OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE        -->
 <!-- SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                -->
 <!--                                                                                       -->
-# ___AWS Secrets Manager Workshop___
+# ___AWS Secrets Manager Builder Sessions___
 
 ## Overview
 
-The Secrets Manager Workshop is a collection of individual "rounds" covering the usage of AWS Secrets Manager. Each round can be done separately and there is no dependency between the rounds. Each round (workshop) takes 1 hour.
+This is a collection of Builder Sessions covering the usage of AWS Secrets Manager. Each Builder Session can be done separately.  There is no dependency between the Builder Sessions. Each Builder Sesssion takes one hour.
 
 * **Level**: 300
 * **Duration**: Each round takes one hour and can be done separately:
@@ -31,4 +31,4 @@ The Secrets Manager Workshop is a collection of individual "rounds" covering the
 
 ## Get started
 
-To get started, click [here](https://secrets-manager.awssecworkshops.com) to proceed to the workshop site.
+To get started, click [here](https://secrets-manager.awssecworkshops.com) to proceed to the Builder Sessions.
