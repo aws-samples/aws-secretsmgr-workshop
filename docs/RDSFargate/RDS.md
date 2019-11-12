@@ -28,7 +28,7 @@ In this phase, you will learn how to use AWS Secrets Manager for rotating the pa
 
 ## View the CloudFormation stack
 
-1. Go to the **<a href="https://console.aws.amazon.com/cloudformation" target="_blank">CloudFormation console</a>** and identify the stack that you built.  Make sure you are in the correct region.  The list of stacks will look similar to the figure below.  The appearance may vary based on the version of the console you are using.  The red arrow points to a link with the name of the CloudFormation stack.  If your stack was built by the AWS Event Engine, it will have a name that starts with *mod-* rather than *smdemo*.
+1. Go to the **<a href="https://console.aws.amazon.com/cloudformation" target="_blank">CloudFormation console</a>** and identify the stack that you built.  Make sure you are in the correct region.  The list of stacks will look similar to the figure below.  The appearance may vary based on the version of the console you are using.  The red arrow points to a link with the name of the CloudFormation stack.  If your stack was built by the AWS Event Engine, it will have a name that starts with *mod-* rather than the example below which uses *smdemo*.
 
 
     ![Stack List](images/RDSFargateStackList.png)
@@ -53,7 +53,7 @@ In this phase, you will learn how to use AWS Secrets Manager for rotating the pa
     | ECRRepository | The ECR repository id |
     | ECSCluster | The ECS cluster id |
 
-    You will need the values in the DBInstance, DBPassword, and DBUser outputs in the next section so copy them to a file on your desktop so they are readily available.
+    You will need the values in the DBInstance, DBPassword, DBUser, and EC2UserPassword outputs in the next section so copy them to a file on your desktop so they are readily available.
 
 ## Store the secret
 
