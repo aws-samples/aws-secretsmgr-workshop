@@ -31,8 +31,33 @@
 
     ---
 
+    **US West 1 (N. California)** &nbsp; &nbsp; &nbsp; &nbsp;
+    <a href="https://console.aws.amazon.com/cloudformation/home?region=us-west-1#/stacks/new?stackName=smdemo&templateURL=https://s3.amazonaws.com/sa-security-specialist-workshops-us-east-1/secrets-manager-workshop/RDSFargate.yml" target="_blank">![Deploy in us-west-1](images/deploy-to-aws.png)</a>
+
+    ---
+
     **US West 2 (Oregon)** &nbsp; &nbsp; &nbsp; &nbsp;
     <a href="https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?stackName=smdemo&templateURL=https://s3.amazonaws.com/sa-security-specialist-workshops-us-east-1/secrets-manager-workshop/RDSFargate.yml" target="_blank">![Deploy in us-west-2](images/deploy-to-aws.png)</a>
+
+    ---
+
+    **EU West 1 (Ireland)** &nbsp; &nbsp; &nbsp; &nbsp;
+    <a href="https://console.aws.amazon.com/cloudformation/home?region=eu-west-1#/stacks/new?stackName=smdemo&templateURL=https://s3.amazonaws.com/sa-security-specialist-workshops-us-east-1/secrets-manager-workshop/RDSFargate.yml" target="_blank">![Deploy in eu-west-1](images/deploy-to-aws.png)</a>
+
+    ---
+
+    **EU West 2 (London)** &nbsp; &nbsp; &nbsp; &nbsp;
+    <a href="https://console.aws.amazon.com/cloudformation/home?region=eu-west-2#/stacks/new?stackName=smdemo&templateURL=https://s3.amazonaws.com/sa-security-specialist-workshops-us-east-1/secrets-manager-workshop/RDSFargate.yml" target="_blank">![Deploy in eu-west-2](images/deploy-to-aws.png)</a>
+
+    ---
+
+    **AP South 1 (Mumbai)** &nbsp; &nbsp; &nbsp; &nbsp;
+    <a href="https://console.aws.amazon.com/cloudformation/home?region=ap-south-1#/stacks/new?stackName=smdemo&templateURL=https://s3.amazonaws.com/sa-security-specialist-workshops-us-east-1/secrets-manager-workshop/RDSFargate.yml" target="_blank">![Deploy in ap-south-1](images/deploy-to-aws.png)</a>
+
+    ---
+
+    **AP SouthEast 2 (Sydney)** &nbsp; &nbsp; &nbsp; &nbsp;
+    <a href="https://console.aws.amazon.com/cloudformation/home?region=ap-southeast-2#/stacks/new?stackName=smdemo&templateURL=https://s3.amazonaws.com/sa-security-specialist-workshops-us-east-1/secrets-manager-workshop/RDSFargate.yml" target="_blank">![Deploy in ap-southeast-2](images/deploy-to-aws.png)</a>
 
     ---
 
