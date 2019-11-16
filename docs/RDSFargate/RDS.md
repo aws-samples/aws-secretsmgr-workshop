@@ -125,6 +125,8 @@ In this section, you will connect to the bastion host so you can run scripts tha
 
     You will see contents similar to the lines below.  The values PASSWORD, USER, and ENDPOINT represent the hard-coded database password, username, and host endpoint.
 
+        (Note: This code fragment is for illustration only and not intended for copying.)
+
         #/bin/bash
         
         # mysql.oldway.sh
@@ -159,6 +161,8 @@ In this section, you will connect to the bastion host so you can run scripts tha
 
     Take a look at the lines below.
 
+        (Note: This code fragment is for illustration and not intended for copying.)
+        
         getsecretvalue() {
           aws secretsmanager get-secret-value --secret-id $1 | \
             jq .SecretString | \
@@ -166,6 +170,8 @@ In this section, you will connect to the bastion host so you can run scripts tha
         }
 
     The above lines define a shell function that uses the AWS CLI to retrieve the secret whose name is passed as a command line argument ($1). The result is a JSON string so the *jq* utility is used to extract the actual value of the secret whose JSON key is named *SecretString*.  Here is an example of what a *SecretString* looks like:
+
+        (Note: This code fragment is for illustration and not intended for copying.)
 
         {
           "engine": "mysql",
