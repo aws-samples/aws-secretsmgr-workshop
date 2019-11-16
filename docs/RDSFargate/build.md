@@ -1,4 +1,4 @@
-# RDS and Fargate Round - Build Phase
+# Using AWS Secrets Manager with Amazon RDS and AWS Fargate - Build Phase
 
 ## Environment setup
 

@@ -48,7 +48,10 @@ Description: Demo environment for AWS Secrets Manager with Amazon RDS and AWS Fa
 # The shell scripts use environment variables to assist with the processing
 # of Secrets Manager strings.  This is not a good idea because the strings may
 # be visibile if someone is doing a "ps" or looking at memory but this approach
-# makes doing demonstrations easier.
+# makes doing demonstrations easier. AWS has provided best practices for using
+# secrets within shell scrips and programs in the following location:
+#
+# https://docs.aws.amazon.com/secretsmanager/latest/userguide/best-practices.html
 #
 # Note on the Docker portion of this template.
 #
@@ -94,7 +97,7 @@ Metadata:
       ProjectTag:
         default: 'Enter the value for the Project tag:'
       AmazonLinux2AmiId:
-        default: 'Enter the name of the SSM AMI Id parameter (DO NOT CHANGE):'
+        default: 'Enter the AMI id (leave unchanged to fetch the latest Amazon Linux 2 AMI):'
 
 Parameters:
 
@@ -558,26 +561,24 @@ Resources:
                 env > /tmp/environmentvariables
                 chmod 644 /tmp/environmentvariables
                 
-                # Create /etc/profile.d/ecs.sh with definitions for all environment
-                # variables that begin with "TASKDEF_".  The file ecs.sh will be
-                # sourced by the bash shell upon login.
+                # Create /etc/profile.d/ecs.sh with export staements for all
+                # environment variables that begin with "TASKDEF_".  The file
+                # ecs.sh will be # sourced by the bash shell upon login.
                 #
-                # Grab the environment variables and parse them using AWK.
-                # Use the equal sign (=) as the field separator.
-                # The environment variable name is the first field.
-                # The environment variable value is the second field.
-                # Enclose the value in single quotes (ASCII 39) because
-                # the Secrets Manager secret value string uses JSON with
-                # double # quotes.
+                # Grab the environment variables and make the following
+                # change:
                 #
-                # There must be a better way to do this...
+                # (1) Add a single quote (apostrophe) after the equals (=)
+                #     and at the end of the line to enclose the entire
+                #     value.
+                # (2) Prepend "export " to the beginning.
                 
                 touch /etc/profile.d/ecs.sh
                 chmod 644 /etc/profile.d/ecs.sh
 
                 env | \
                   grep "^TASKDEF_" | \
-                  awk -F= '{printf "export %s=%c%s%c\n", $1, 39, $2, 39 }' \
+                  sed -e "s/=/='/" -e "s/$/'/" -e "s/^/export /" \
                   >> /etc/profile.d/ecs.sh
  
                 nohup /usr/sbin/sshd -D -p 22 &
