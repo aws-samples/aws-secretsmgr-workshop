@@ -1,4 +1,4 @@
-# Using AWS Secrets Manager with Amazon RDS and AWS Fargate - Clean up phase
+# Using AWS Secrets Manager with Amazon RDS and AWS Fargate - Clean Up Phase
 
 ## Fargate-specific clean up
 
