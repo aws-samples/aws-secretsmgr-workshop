@@ -816,7 +816,9 @@
 
 
 <p>You will see contents similar to the lines below.  The values PASSWORD, USER, and ENDPOINT represent the hard-coded database password, username, and host endpoint.</p>
-<div class="codehilite"><pre><span></span>#/bin/bash
+<div class="codehilite"><pre><span></span>(Note: This code fragment is for illustration only and not intended for copying.)
+
+#/bin/bash
 
 # mysql.oldway.sh
 
@@ -854,7 +856,9 @@ quit;
 
 
 <p>Take a look at the lines below.</p>
-<div class="codehilite"><pre><span></span>getsecretvalue() {
+<div class="codehilite"><pre><span></span>(Note: This code fragment is for illustration and not intended for copying.)
+
+getsecretvalue() {
   aws secretsmanager get-secret-value --secret-id $1 | \
     jq .SecretString | \
     jq fromjson
@@ -863,7 +867,9 @@ quit;
 
 
 <p>The above lines define a shell function that uses the AWS CLI to retrieve the secret whose name is passed as a command line argument ($1). The result is a JSON string so the <em>jq</em> utility is used to extract the actual value of the secret whose JSON key is named <em>SecretString</em>.  Here is an example of what a <em>SecretString</em> looks like:</p>
-<div class="codehilite"><pre><span></span>{
+<div class="codehilite"><pre><span></span>(Note: This code fragment is for illustration and not intended for copying.)
+
+{
   &quot;engine&quot;: &quot;mysql&quot;,
   &quot;username&quot;: &quot;myuser&quot;,
   &quot;password&quot;: &quot;mypassword&quot;,

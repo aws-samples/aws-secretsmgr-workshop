@@ -61,33 +61,35 @@ In this section, you will store the RDS database credentials in AWS Secrets Mana
 
 1. Go to the **<a href="https://console.aws.amazon.com/secretsmanager" target="_blank">Secrets Manager console</a>**.
 
-2. Click **Store a new secret**.
+2. Check your region to make sure the Secrets Manager console is operating in the correct region. If not, then switch your region into the region in which you deployed your CloudFomration stack.
 
-3. Select the **Credentials for RDS database** radio button.
+3. Click **Store a new secret**.
 
-4. Copy the values for the DBUser and DBPassword CloudFormation output values that you got from the CloudFormation stack into the **User name** and **Password** fields respectively.
+4. Select the **Credentials for RDS database** radio button.
 
-5. For the encryption key, Secrets Manager gives you the option of using the default KMS key that Secrets Manager creates for your account.  This default key is managed by Secrets Manager itself.  It provides encryption but you do not have the ability manage the policies or grants for the key.  You can also specify your own KMS key which gives you more the option of configuring grants and policies that provide more granular permissions.
+5. Copy the values for the DBUser and DBPassword CloudFormation output values that you got from the CloudFormation stack into the **User name** and **Password** fields respectively.
+
+6. For the encryption key, Secrets Manager gives you the option of using the default KMS key that Secrets Manager creates for your account.  This default key is managed by Secrets Manager itself.  It provides encryption but you do not have the ability manage the policies or grants for the key.  You can also specify your own KMS key which gives you more the option of configuring grants and policies that provide more granular permissions.
 
     In a production environment that requires fine-grained security controls, you would likely choose your own key.  For this workshop we do not require these additional controls so select **DefaultEncryptionKey** in the dropdown menu.
 
-6. Scroll down to the bottom of the page and you will see a list of your RDS instances.  Select the RDS instance based on the DBInstance CloudFormation output value.
+7. Scroll down to the bottom of the page and you will see a list of your RDS instances.  Select the RDS instance based on the DBInstance CloudFormation output value.
 
     ![AWS Secrets Manager store secret part 1](images/RDSSMStore1.png)
 
-7. Click **Next**.
+8. Click **Next**.
 
-8. Enter a name for the secret.  You can pick a name or just use **smdemo** as shown below.  Note that this must bot be the name of a secret that is pending deletion.
+9. Enter a name for the secret.  You can pick a name or just use **smdemo** as shown below.  Note that this must bot be the name of a secret that is pending deletion.
 
     ![AWS Secrets Manager store secret part 2](images/RDSSMStore2.png)
 
-9. Click **Next**.
+10. Click **Next**.
 
-10. Select **Disable automatic rotation** and then click **Next**.   We will enable rotation later in this module.
+11. Select **Disable automatic rotation** and then click **Next**.   We will enable rotation later in this module.
 
     ![AWS Secrets Manager store secret part 3](images/RDSSMStore3.png)
 
-11. Click **Store**.
+12. Click **Store**.
 
     You have now stored your secret value as shown below.
 
@@ -184,6 +186,8 @@ In this section, you will connect to the bastion host so you can run scripts tha
 
     Note that the *SecretString* itself is a JSON structure.  Now look at the following lines.
 
+        (Note: This code fragment is for illustration and not intended for copying.)
+
         secret=`getsecretvalue $1`
         user=$(echo $secret | jq -r .username)
         password=$(echo $secret | jq -r .password)
@@ -191,6 +195,8 @@ In this section, you will connect to the bastion host so you can run scripts tha
         port=$(echo $secret | jq -r .port)
         
     These lines call the shell function and then use *jq* to extract the database username, password, endpoint, and port from the *SecretString*.  These are then passed to the *mysql* command as shown on the lines below.  Note that there is no space after the -p option.
+
+        (Note: This code fragment is for illustration and not intended for copying.)
 
         mysql \
         -p$password \
@@ -216,19 +222,21 @@ In this section, you will enable the rotation of the secret you created in AWS S
 
 1. Go to the **<a href="https://console.aws.amazon.com/secretsmanager" target="_blank">Secrets Manager console</a>**.
 
-2. Click on the secret that you previously created.
+2. Check your region to make sure the Secrets Manager console is operating in the correct region. If not, then switch your region into the region in which you deployed your CloudFomration stack.
 
-3. Click **Edit rotation**.
+3. Click on the secret that you previously created.
 
-4. Select **Enable automatic rotation**.
+4. Click **Edit rotation**.
 
-5. Choose **30 days** for the rotation interval.  
+5. Select **Enable automatic rotation**.
 
-6. Select the **Create a new Lambda function to perform rotation** radio button.  This will cause Secrets Manager to build a rotation function using the AWS-provided functions for standard databases.   If you had customized your own rotation function or if you were using a credential for a special application, you would select that here.
+6. Choose **30 days** for the rotation interval.  
 
-7. Enter a name for the rotation function.   In the figure below, we used **smdemo** but you can select whatever you wish.
+7. Select the **Create a new Lambda function to perform rotation** radio button.  This will cause Secrets Manager to build a rotation function using the AWS-provided functions for standard databases.   If you had customized your own rotation function or if you were using a credential for a special application, you would select that here.
 
-8. You now need to select the secret whose permissions will be used to rotate the secret.  For this Builder Session, select **Use this secret.**  This will tell the rotation function to access the RDS database using the secret and rotate *the same secret*.
+8. Enter a name for the rotation function.   In the figure below, we used **smdemo** but you can select whatever you wish.
+
+9. You now need to select the secret whose permissions will be used to rotate the secret.  For this Builder Session, select **Use this secret.**  This will tell the rotation function to access the RDS database using the secret and rotate *the same secret*.
 
     If your application supports two classes of users, for example a "superuser" and a "normal privilege" user, you could select **Use a secret that I have previously stored in Secrets Manager** and use the "superuser" credential to rotate the credential for the "normal privilege" user.
 
@@ -236,9 +244,9 @@ In this section, you will enable the rotation of the secret you created in AWS S
 
     ![AWS Secrets Manager rotation part 1](images/RDSRotate1.png)
 
-9. Click **Save**.
+10. Click **Save**.
 
-10. You will see a message telling you that the rotation is beginning and that you should remain on the page until it is complete. AWS Secrets Manager is now using the [AWS Serverless Application Repository](https://aws.amazon.com/serverless/serverlessrepo/) to install an [AWS Lambda rotation](https://aws.amazon.com/lambda/) function on your behalf.  **Do not leave this page until the rotation is complete.**
+11. You will see a message telling you that the rotation is beginning and that you should remain on the page until it is complete. AWS Secrets Manager is now using the [AWS Serverless Application Repository](https://aws.amazon.com/serverless/serverlessrepo/) to install an [AWS Lambda rotation](https://aws.amazon.com/lambda/) function on your behalf.  **Do not leave this page until the rotation is complete.**
 
     ![AWS Secrets Manager rotation part 2](images/RDSRotate2.png)
 
@@ -246,7 +254,7 @@ In this section, you will enable the rotation of the secret you created in AWS S
 
     ![AWS Secrets Manager rotation part 3](images/RDSRotate3.png)
 
-11. Click **Retrieve secret value** to see the new password value.
+12. Click **Retrieve secret value** to see the new password value.
 
 ## Access the database
 

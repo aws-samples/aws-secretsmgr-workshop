@@ -103,7 +103,7 @@ You will now configure the Amazon Elastic Container Service Task Definition that
     | Field | Value |
     | ----- | ----- |
     | Launch type | Fargate |
-    | Cluster VPC | The VPC that was created by CloudFormation with the 10.200.0.0/16 subnet |
+    | Cluster VPC | The VPC that was created by CloudFormation with the 10.200.0.0/16 CIDR |
     | Subnets | Select all of the subnets listed |
     | Security group | Select the group whose name includes *BastionSG* |
 
@@ -132,6 +132,10 @@ Now that you have connected to the AWS Fargate container, you can now access the
 1. Run the command below to access the RDS database.  Note that you do not supply the name of a secret since that has been passed in the task definition.
 
         ./mysql.newway.sh
+        use smdemo;
+        show tables;
+        select * from bookinfo;
+        quit;
 
     The output should be similar to what you see in the figure below.
 
