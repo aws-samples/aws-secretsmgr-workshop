@@ -737,6 +737,9 @@
 <p>Go to the <strong><a href="https://console.aws.amazon.com/secretsmanager" target="_blank">Secrets Manager console</a></strong>.</p>
 </li>
 <li>
+<p>Check your region to make sure the Secrets Manager console is operating in the correct region. If not, then switch your region into the region in which you deployed your CloudFomration stack.</p>
+</li>
+<li>
 <p>Click <strong>Store a new secret</strong>.</p>
 </li>
 <li>
@@ -881,7 +884,9 @@ getsecretvalue() {
 
 
 <p>Note that the <em>SecretString</em> itself is a JSON structure.  Now look at the following lines.</p>
-<div class="codehilite"><pre><span></span>secret=`getsecretvalue $1`
+<div class="codehilite"><pre><span></span>(Note: This code fragment is for illustration and not intended for copying.)
+
+secret=`getsecretvalue $1`
 user=$(echo $secret | jq -r .username)
 password=$(echo $secret | jq -r .password)
 endpoint=$(echo $secret | jq -r .host)
@@ -890,7 +895,9 @@ port=$(echo $secret | jq -r .port)
 
 
 <p>These lines call the shell function and then use <em>jq</em> to extract the database username, password, endpoint, and port from the <em>SecretString</em>.  These are then passed to the <em>mysql</em> command as shown on the lines below.  Note that there is no space after the -p option.</p>
-<div class="codehilite"><pre><span></span>mysql \
+<div class="codehilite"><pre><span></span>(Note: This code fragment is for illustration and not intended for copying.)
+
+mysql \
 -p$password \
 -u $user \
 -P $port \
@@ -918,6 +925,9 @@ quit;
 <ol>
 <li>
 <p>Go to the <strong><a href="https://console.aws.amazon.com/secretsmanager" target="_blank">Secrets Manager console</a></strong>.</p>
+</li>
+<li>
+<p>Check your region to make sure the Secrets Manager console is operating in the correct region. If not, then switch your region into the region in which you deployed your CloudFomration stack.</p>
 </li>
 <li>
 <p>Click on the secret that you previously created.</p>

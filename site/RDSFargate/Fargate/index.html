@@ -796,7 +796,7 @@
 </tr>
 <tr>
 <td>Cluster VPC</td>
-<td>The VPC that was created by CloudFormation with the 10.200.0.0/16 subnet</td>
+<td>The VPC that was created by CloudFormation with the 10.200.0.0/16 CIDR</td>
 </tr>
 <tr>
 <td>Subnets</td>
@@ -836,6 +836,10 @@
 <li>
 <p>Run the command below to access the RDS database.  Note that you do not supply the name of a secret since that has been passed in the task definition.</p>
 <div class="codehilite"><pre><span></span>./mysql.newway.sh
+use smdemo;
+show tables;
+select * from bookinfo;
+quit;
 </pre></div>
 
 

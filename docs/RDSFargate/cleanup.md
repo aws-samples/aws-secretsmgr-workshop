@@ -14,6 +14,14 @@
 
         sudo su - ec2-user
 
+3. Run the command below to perform the Fargate clean up tasks.
+
+        ./cleanup.sh
+
+    The command will stop any Fargate Tasks, ungregister task definitions, and delete the Amazon ECS cluster and the Amazon ECR repository.  The output will be similar to that shown in the figure below.
+
+    ![AWS Fargate cleanup](images/cleanupfargate.png)
+
 ## General clean up
 
 !!! info  "Do not perform general clean up if you are at an *AWS event* where the *Event Engine* is being used. This is handled automatically." 
