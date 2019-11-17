@@ -1,4 +1,4 @@
-# Using AWS Secrets Manaager with Amazon RDS and and AWS Fargate - Scenario
+# Using AWS Secrets Manager with Amazon RDS and AWS Fargate - Scenario
 
 This Secrets Manager Builder Session guides you through the use of **<a href="https://aws.amazon.com/secrets-manager/" target="_blank">AWS Secrets Manager</a>** with **<a href="https://aws.amazon.com/rds/" target="_blank">Amazon RDS</a>** and **<a href="https://aws.amazon.com/fargate/" target="_blank">AWS Fargate</a>**.  In the first phase of the Builder Session, you will access the RDS data base with Secrets Manager.  You will then use Secrets Manager to rotate the data base password.  You will then use Secrets Manager to access the data base again to show that you can continue to access the data base after the rotation.
 
