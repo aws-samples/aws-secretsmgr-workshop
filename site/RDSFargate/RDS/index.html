@@ -942,7 +942,7 @@ quit;
 <p>Choose <strong>30 days</strong> for the rotation interval.  </p>
 </li>
 <li>
-<p>Select the <strong>Create a new Lambda function to perform rotation</strong> radio button.  This will cause Secrets Manager to build a rotation function using the AWS-provided functions for standard databases.   If you had customized your own rotation function or if you were using a credential for a special application, you would select that here.</p>
+<p>Select the <strong>Create a new Lambda function to perform rotation</strong> radio button.  This will cause Secrets Manager to use CloudFormation on your behalf to create a rotation function using the AWS Serverless Application Repository.   If you had customized your own rotation function or if you were using a credential for a special application, you would select that here.</p>
 </li>
 <li>
 <p>Enter a name for the rotation function.   In the figure below, we used <strong>smdemo</strong> but you can select whatever you wish.</p>
