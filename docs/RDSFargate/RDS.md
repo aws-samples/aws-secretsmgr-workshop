@@ -232,7 +232,7 @@ In this section, you will enable the rotation of the secret you created in AWS S
 
 6. Choose **30 days** for the rotation interval.  
 
-7. Select the **Create a new Lambda function to perform rotation** radio button.  This will cause Secrets Manager to build a rotation function using the AWS-provided functions for standard databases.   If you had customized your own rotation function or if you were using a credential for a special application, you would select that here.
+7. Select the **Create a new Lambda function to perform rotation** radio button.  This will cause Secrets Manager to use CloudFormation on your behalf to create a rotation function using the AWS Serverless Application Repository.   If you had customized your own rotation function or if you were using a credential for a special application, you would select that here.
 
 8. Enter a name for the rotation function.   In the figure below, we used **smdemo** but you can select whatever you wish.
 
