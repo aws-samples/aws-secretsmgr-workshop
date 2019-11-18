@@ -26,7 +26,7 @@
 
         ![AWS Fargate cleanup](images/cleanupfargate.png)
 
-    4. **<a href="https://docs.aws.amazon.com/secretsmanager/latest/userguide/manage_delete-restore-secret.html?shortFooter=true" target="_blank">Delete the secret you created in Secrets Manager</a>**.  Note that when you delete a secret, the deletion is scheduled for a minimum of seven days in the future. 
+    4. **<a href="https://docs.aws.amazon.com/secretsmanager/latest/userguide/manage_delete-restore-secret.html?shortFooter=true" target="_blank">Delete the secret you created in Secrets Manager</a>**.  Check the region for the console to make sure you are operating in the region in which the CloudFormation stack was deployed.  Note that when you delete a secret, the deletion is scheduled for a minimum of seven days in the future. 
 
     5. When you enabled rotation on your secret, AWS Secrets Manager used AWS CloudFormation to create an AWS Lambda function to do the rotation using the AWS Serverless Application Repository.  Go to the AWS CloudFormation console and delete this stack. The name of the stack begins with the following string:
 
