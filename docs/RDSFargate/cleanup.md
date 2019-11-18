@@ -22,7 +22,7 @@
 
         ./cleanup.sh
 
-    The command will stop any Fargate Tasks, ungregister task definitions, and delete the Amazon ECS cluster and the Amazon ECR repository.  The output will be similar to that shown in the figure below.
+        The command will stop any Fargate Tasks, ungregister task definitions, and delete the Amazon ECS cluster and the Amazon ECR repository.  The output will be similar to that shown in the figure below.
 
         ![AWS Fargate cleanup](images/cleanupfargate.png)
 
