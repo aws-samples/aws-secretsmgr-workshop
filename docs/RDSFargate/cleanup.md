@@ -24,7 +24,7 @@
 
     The command will stop any Fargate Tasks, ungregister task definitions, and delete the Amazon ECS cluster and the Amazon ECR repository.  The output will be similar to that shown in the figure below.
 
-    ![AWS Fargate cleanup](images/cleanupfargate.png)
+        ![AWS Fargate cleanup](images/cleanupfargate.png)
 
     4. **<a href="https://docs.aws.amazon.com/secretsmanager/latest/userguide/manage_delete-restore-secret.html?shortFooter=true" target="_blank">Delete the secret you created in Secrets Manager</a>**.  Note that when you delete a secret, the deletion is scheduled for a minimum of seven days in the future. 
 

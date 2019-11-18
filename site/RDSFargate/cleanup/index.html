@@ -446,45 +446,9 @@
       
     
     
-      <label class="md-nav__link md-nav__link--active" for="__toc">
-        Clean up phase
-      </label>
-    
     <a href="./" title="Clean up phase" class="md-nav__link md-nav__link--active">
       Clean up phase
     </a>
-    
-      
-<nav class="md-nav md-nav--secondary">
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">Table of contents</label>
-    <ul class="md-nav__list" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#fargate-specific-clean-up" title="Fargate-specific clean up" class="md-nav__link">
-    Fargate-specific clean up
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#general-clean-up" title="General clean up" class="md-nav__link">
-    General clean up
-  </a>
-  
-</li>
-      
-      
-      
-      
-      
-    </ul>
-  
-</nav>
     
   </li>
 
@@ -535,29 +499,6 @@
     
   
   
-    <label class="md-nav__title" for="__toc">Table of contents</label>
-    <ul class="md-nav__list" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#fargate-specific-clean-up" title="Fargate-specific clean up" class="md-nav__link">
-    Fargate-specific clean up
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#general-clean-up" title="General clean up" class="md-nav__link">
-    General clean up
-  </a>
-  
-</li>
-      
-      
-      
-      
-      
-    </ul>
-  
 </nav>
                   </div>
                 </div>
@@ -572,7 +513,10 @@
                 
                 
                 <h1 id="using-aws-secrets-manager-with-amazon-rds-and-aws-fargate-clean-up-phase">Using AWS Secrets Manager with Amazon RDS and AWS Fargate - Clean Up Phase</h1>
-<h2 id="fargate-specific-clean-up">Fargate-specific clean up</h2>
+<div class="admonition info">
+<p class="admonition-title">If you are at an <em>AWS event</em> where the <em>Event Engine</em> is being used, you are done!  Clean up is handled automatically.</p>
+</div>
+<details class="info"><summary>Click here if you are using your own account or at an AWS event and Event Engine is <em>not</em> being used.</summary><p>Now that you have seen how AWS Secrets Manager can rotate the credentials for a private database and with AWS Fargate, please follow these steps to remove the resources you created, including the private database.</p>
 <ol>
 <li>
 <p>If you do not have a session open to the bastion host, then connect to the bastion host using AWS Systems Manager Session Manager.  To do this:</p>
@@ -586,26 +530,15 @@
 </li>
 <li>
 <p>The scripts you will be using are owned by the ec2-user account.  If you are not currently using ec2-user as your effective user id, then enter the command below to change your effective user id and directory to those of ec2-user:</p>
-<div class="codehilite"><pre><span></span>sudo su - ec2-user
-</pre></div>
-
-
+<p>sudo su - ec2-user</p>
 </li>
 <li>
 <p>Run the command below to perform the Fargate clean up tasks.</p>
-<div class="codehilite"><pre><span></span>./cleanup.sh
-</pre></div>
-
-
-<p>The command will stop any Fargate Tasks, ungregister task definitions, and delete the Amazon ECS cluster and the Amazon ECR repository.  The output will be similar to that shown in the figure below.</p>
-<p><img alt="AWS Fargate cleanup" src="../images/cleanupfargate.png" /></p>
+<p>./cleanup.sh</p>
 </li>
 </ol>
-<h2 id="general-clean-up">General clean up</h2>
-<div class="admonition info">
-<p class="admonition-title">Do not perform general clean up if you are at an <em>AWS event</em> where the <em>Event Engine</em> is being used. This is handled automatically.</p>
-</div>
-<details class="info"><summary>Click here if you're <em>not at an AWS event</em> or are using your own account</summary><p>Now that you have seen how AWS Secrets Manager can rotate the credentials for a private database and, optionally, with AWS Fargate, please follow these steps to remove the resources you created, including the private database.</p>
+<p>The command will stop any Fargate Tasks, ungregister task definitions, and delete the Amazon ECS cluster and the Amazon ECR repository.  The output will be similar to that shown in the figure below.</p>
+<p><img alt="AWS Fargate cleanup" src="../images/cleanupfargate.png" /></p>
 <ol>
 <li>
 <p><strong><a href="https://docs.aws.amazon.com/secretsmanager/latest/userguide/manage_delete-restore-secret.html?shortFooter=true" target="_blank">Delete the secret you created in Secrets Manager</a></strong>.  Note that when you delete a secret, the deletion is scheduled for a minimum of seven days in the future. </p>
