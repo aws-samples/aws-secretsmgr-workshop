@@ -81,7 +81,6 @@ Metadata:
         Parameters:
           - DBName
           - DBPort
-          - BastionCidr
           - NamePrefix
           - ProjectTag
           - AmazonLinux2AmiId
@@ -90,8 +89,6 @@ Metadata:
         default: 'Enter the name of the database:'
       DBPort:
         default: 'Enter the TCP port for the database endpoint:'
-      BastionCidr:
-        default: 'Enter the CIDR that can access the bastion host:'
       NamePrefix:
         default: 'Enter a prefix for the Name tag:'
       ProjectTag:
@@ -142,14 +139,6 @@ Parameters:
     MinValue: 1024
     MaxValue: 65535
     ConstraintDescription: 'Must be between 1024 and 65535'
-
-# BastionCidr - The CIDR block that can access the bastion host
-
-  BastionCidr:
-    AllowedPattern: '((\d{1,3})\.){3}\d{1,3}/\d{1,2}'
-    Default: 0.0.0.0/0
-    ConstraintDescription: 'Must be a CIDR block (#.#.#.#/#)'
-    Type: String
 
 # AmazonLinux2AmiId: The AMI for Amazon Linux 2
 
@@ -277,9 +266,9 @@ Resources:
       GroupDescription: Enable SSH access
       SecurityGroupIngress:
       - IpProtocol: tcp
-        FromPort: '22'
-        ToPort: '22'
-        CidrIp: !Ref BastionCidr
+        FromPort: 22
+        ToPort: 22
+        CidrIp: 10.200.0.0/16
       Tags:
       - Key: Name
         Value: !Join [ '', [ Ref: NamePrefix, '-bastionsg' ]]
@@ -629,25 +618,44 @@ Resources:
 
                 # Clean up artifacts before deleting the CloudFormation stack.
 
-                echo deleting repository...
-                aws ecr delete-repository --repository-name ${ECRRepository} --force --output text
+                echo deleting repository ${ECRRepository}...
+                aws ecr delete-repository --output text \
+                  --repository-name ${ECRRepository} --force >/dev/null 2>&1
 
+                TASKDEFINITION_ROOT=`echo "${TaskDefinition}"|sed -e 's/:1$//'`
                 echo deregistering task definitions...
                 aws ecs list-task-definitions --output text | \
-                  grep "${TaskDefinition}" | \
-                  cut -f2 | \
-                  xargs \
-                    --max-lines=1 \
-                    --no-run-if-empty \
-                    aws ecs deregister-task-definition --task-definition 
+                  grep "$TASKDEFINITION_ROOT" | \
+                  cut -f2 > /tmp/taskdefs.$$
+
+                OLDIFS="$IFS"
+                while IFS= read -r TASKDEF
+                do
+                  echo deregistering task definition "$TASKDEF"...
+                  aws ecs deregister-task-definition --output text \
+                    --task-definition $TASKDEF >/dev/null 2>&1
+                done < /tmp/taskdefs.$$
+                IFS="$OLDIFS"
+                rm /tmp/taskdefs.$$
 
                 echo stopping tasks...
-                aws ecs list-tasks --output text --cluster ${ECSCluster} | \
-                  cut -f2 | \
-                  xargs \
-                    --max-lines=1 \
-                    --no-run-if-empty \
-                    aws ecs stop-task --cluster ${ECSCluster} --task 
+                aws ecs list-tasks --output text \
+                  --cluster ${ECSCluster} | \
+                  cut -f2 > /tmp/tasks.$$
+
+                OLDIFS="$IFS"
+                while IFS= read -r TASK
+                do
+                  echo stopping task "$TASK"...
+                  aws ecs stop-task --output text \
+                    --cluster ${ECSCluster} --task $TASK >/dev/null 2>&1
+                done < /tmp/tasks.$$
+                IFS="$OLDIFS"
+                rm /tmp/tasks.$$
+
+                echo deleting cluster ${ECSCluster}...
+                aws ecs delete-cluster --output text \
+                  --cluster ${ECSCluster}  >/dev/null 2>&1
               mode: '755'
               owner: ec2-user
               group: ec2-user
