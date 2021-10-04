@@ -19,20 +19,3 @@
 ***THIS WORKSHOP HAS BEEN MOVED TO THE FOLLOWING LOCATION:***
 
 [https://catalog.us-east-1.prod.workshops.aws/v2/workshops/8e3a5338-cfc0-4d53-9b97-e8f96c59950a/en-US](https://catalog.us-east-1.prod.workshops.aws/v2/workshops/8e3a5338-cfc0-4d53-9b97-e8f96c59950a/en-US)
-
-## Overview
-
-This is a collection of Builder Sessions covering the usage of AWS Secrets Manager. Each Builder Session can be done separately.  There is no dependency between the Builder Sessions. Each Builder Sesssion takes one hour.
-
-* **Level**: 300
-* **Duration**: Each round takes one hour and can be done separately:
-* **CSF Functions**: Protect
-* **CAF Components**: Preventive
-* **Prerequisites**:
-    * AWS Account
-    * AWS IAM User (with admin permissions)
-    * Each round may have additional prerequsites
-
-## Get started
-
-To get started, click [here](https://secrets-manager.awssecworkshops.com) to proceed to the Builder Sessions.
